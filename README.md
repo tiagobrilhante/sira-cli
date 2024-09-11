@@ -1,10 +1,8 @@
-# cmaemnumeros-cli
+# sicc-cli
 
-> Cliente para o CMA em Números em VUE.JS
+> Cliente para o Sistema Interno de Controle de Chamados da UniNorte em VUE.JS (2.7)
 
 ## Build Setup
-
-Teste de funcioinalidade
 
 ``` bash
 # install dependencies
