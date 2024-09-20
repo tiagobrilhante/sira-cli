@@ -13,6 +13,7 @@ import GerenciamentoDeDashboard from '../components/dashboard/GerenciamentoDashb
 import BkupBanco from '../views/administrativo/BkupBanco.vue'
 import FerramentasAdmin from '../views/administrativo/FerramentasAdmin.vue'
 import AdmUser from '../components/areaAdministrativa/AdmUser.vue'
+import AdmUnidades from '../components/areaAdministrativa/AdmUnidades.vue'
 import AdmSecoes from '../components/areaAdministrativa/AdmSecoes.vue'
 
 Vue.use(VueRouter)
@@ -37,6 +38,14 @@ const routes = [
     path: '/admuser',
     name: 'admuser',
     component: AdmUser,
+    meta: {
+      logado: true
+    }
+  },
+  {
+    path: '/admunidades',
+    name: 'admunidades',
+    component: AdmUnidades,
     meta: {
       logado: true
     }

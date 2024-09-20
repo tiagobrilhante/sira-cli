@@ -3,166 +3,157 @@
 
     <BarraNavegacao></BarraNavegacao>
 
-    <v-container fluid>
+    <v-container>
+      <br>
+      <!--cabeçalho-->
+      <v-row>
 
-      <!--form para login-->
-      <v-form @submit.prevent="efetuarLogin">
-        <v-container>
-          <br>
+        <v-col cols="8" offset="2">
+          <v-alert class="ma-0 bordaBranca" color="#015088" dense rounded="xxl">
 
-          <!--cabeçalho-->
-          <v-row>
+            <v-row>
+              <v-col class="text-left align-self-start align-content-start" cols="4">
+                <img :src="require('@/assets/icons/ser_educacional_branco.png')" alt="Logo Uninorte" width="100%">
+              </v-col>
+              <v-col class="text-center" cols="8">
+                <h1 class="white--text pt-4"><i>{{ configSis.nomeSis }}</i></h1>
+                <h3 class="white--text">{{ configSis.labelSis }}</h3>
+              </v-col>
+            </v-row>
 
-            <v-col cols="8" offset="2">
-              <v-alert class="ma-0" rounded="xl" dense>
+          </v-alert>
+        </v-col>
+      </v-row>
 
-                <v-row>
-                  <v-col cols="2" class="text-left align-self-start align-content-start">
-                    <img alt="Logo CMA" :src="require('@/assets/img/logoCMA.png')" width="70px">
-                  </v-col>
-                  <v-col class="text-center" cols="8">
-                    <h1>{{ configSis.nomeSis }}</h1><br>
-                    <h3>{{ configSis.labelSis }}</h3>
-                  </v-col>
-                  <v-col cols="2" class="text-right align-self-end align-content-end">
-                    <img alt="Logo EB" :src="require('@/assets/img/logoEb.png')" width="60px">
-                  </v-col>
-                </v-row>
+      <!--seleção de opcoes-->
+      <v-row>
+        <v-col cols="8" offset="2">
+          <v-alert class="text-center bordaBranca" color="#015088" rounded="xxl">
+            <img :src="require('@/assets/img/logo-ser-branca.png')" alt="Logo Uninorte" width="200px"> <br><br>
+            <v-btn block class="white--text" color="rgb(250, 115, 59)" @click="openDialog('solicita')">Abrir uma
+              solicitação
+            </v-btn>
+            <br>
+            <v-btn block class="white--text" color="rgb(250, 115, 59)" @click="openDialog('acompanha')">Acompanhar
+              solicitações
+              abertas
+            </v-btn>
+          </v-alert>
+        </v-col>
+      </v-row>
 
-              </v-alert>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col
-              cols="8"
-              offset="2"
-            >
-              <v-card
-                elevation="10"
-                rounded="lg"
-              >
-
-                <!--card title-->
-                <v-card-title>
-                  <v-icon class="mr-4">
-                    fa fa-user
-                  </v-icon>
-                  Login
-                </v-card-title>
-
-                <!--card text-->
-                <v-card-text>
-                  <v-container>
-
-                    <!--cpf-->
-                    <v-row no-gutters>
-                      <v-col>
-                        <v-text-field
-                          id="email"
-                          v-model="usuario.cpf"
-                          clearable
-                          dense
-                          label="CPF"
-                          name="cpf"
-                          outlined
-                          placeholder="Insira o seu CPF"
-                          required
-                          v-mask-cpf
-                        />
-                      </v-col>
-                    </v-row>
-
-                    <!--Password-->
-                    <v-row no-gutters>
-                      <v-col>
-                        <v-text-field
-                          v-model="usuario.password"
-                          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                          :type="show1 ? 'text' : 'password'"
-                          clearable
-                          counter
-                          dense
-                          hint="No mínimo 6 caracteres"
-                          label="Senha"
-                          name="password"
-                          outlined
-                          required
-                          @click:append="show1 = !show1"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-
-                    <!--logar e cadastro-->
-                    <v-row no-gutters>
-                      <!--logar-->
-                      <v-col class="text-left">
-                        <v-btn
-                          color="primary"
-                          elevation="2"
-                          type="submit"
-                        >Entrar
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-
-                  </v-container>
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
     </v-container>
+
+    <!--Dialog Geral -->
+    <v-dialog v-model="dialogGeral" max-width="90%" persistent scrollable>
+      <v-card color="#748bab" rounded="xxl">
+        <!--titulo e botão fechar-->
+        <v-card-title class="justify-center text-center">
+          <v-row>
+            <v-col cols="1"></v-col>
+            <v-col class="text-h4 white--text" cols="10">
+              <b>{{ objetoDialog.cabecalho }}</b>
+            </v-col>
+            <v-col cols="1">
+              <v-btn color="grey lighten-1" @click="dialogGeral = false">X</v-btn>
+            </v-col>
+          </v-row>
+
+        </v-card-title>
+
+        <!-- card Text-->
+        <v-card-text>
+
+          <AberturaChamado v-if="objetoDialog.action_type === 'Solicitação'"></AberturaChamado>
+          <Login :tipo="tipo" v-if="objetoDialog.action_type === 'Verificação'"></Login>
+
+        </v-card-text>
+        <v-card-actions class="pb-5">
+          <v-spacer></v-spacer>
+          <v-btn color="grey lighten-1" @click="dialogGeral = false">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </v-main>
 
 </template>
 
 <script>import config from '../http/config'
-import {cpf} from 'cpf-cnpj-validator'
 import BarraNavegacao from '../components/barra-navegacao/BarraNavegacao'
+import AberturaChamado from '../components/chamados/AberturaChamado'
+import Login from '../components/login/Login.vue'
 
 export default {
 
-  components: {
-    BarraNavegacao
-  },
+  components: {BarraNavegacao, AberturaChamado, Login},
   data () {
     return {
       configSis: config,
-      usuario: {},
-      show1: false
+      dialogGeral: false,
+      objetoDialog: {
+        'cabecalho': '',
+        'txt_button': '',
+        'action_type': ''
+      },
+      tipo: 'Aluno'
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    efetuarLogin () {
-      if (!cpf.isValid(this.usuario.cpf)) {
-        this.$toastr.e(
-          'CPF invalido', 'Erro!'
-        )
+    openDialog (acao) {
+      console.log(acao)
+      if (acao === 'solicita') {
+        this.objetoDialog = {
+          'cabecalho': 'Solicitação de Atendimento',
+          'txt_button': 'Solicitar',
+          'action_type': 'Solicitação'
+        }
       } else {
-        this.$store.dispatch('efetuarLogin', this.usuario)
-          .then(response => {
-            if (response.user.reset) {
-              this.$router.push({name: 'reset'})
-            } else {
-              this.$router.push({name: 'home'})
-            }
-          })
-          .catch(erro => {
-            if (erro.request.status === 401) {
-              this.$toastr.e(
-                'Login ou senha inválidos', 'Erro!'
-              )
-            }
-          })
+        this.objetoDialog = {
+          'cabecalho': 'Verificação de Atendimentos',
+          'txt_button': 'Verificar',
+          'action_type': 'Verificação'
+        }
       }
+
+      this.dialogGeral = true
     }
   }
 }
 </script>
 <style>
+.bordaBranca {
+  position: relative;
+}
+
+.bordaBranca::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border: 3px solid white;
+  pointer-events: none;
+  border-radius: 30px;
+}
+
+.bordaAzul {
+  position: relative;
+}
+
+.bordaAzul::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border: 3px solid #cd7f0d;
+  pointer-events: none;
+  border-radius: 30px;
+}
 </style>

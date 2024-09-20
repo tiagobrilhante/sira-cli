@@ -3,6 +3,7 @@ let webpack = require('webpack')
 import config from '/src/http/config'
 
 module.exports = {
+
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),

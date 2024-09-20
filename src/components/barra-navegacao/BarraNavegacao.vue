@@ -6,10 +6,10 @@
       color="#015088"
     >
 
-      <v-toolbar-title>{{ configSis.nomeSis }}
+      <v-toolbar-title><span class="white--text"><i>{{ configSis.nomeSis }}</i></span>
         <v-chip class="ml-4 mr-10" small> {{ configSis.labelSis }}</v-chip>
       </v-toolbar-title>
-
+      <img :src="require('@/assets/img/logo-ser-branca.png')" alt="Logo Uninorte" width="150px">
       <!--home-->
       <template v-if="usuarioEstaLogado && usuarioResetado">
         <div class="text-center">
@@ -17,8 +17,8 @@
             rounded="xl"
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn class="mr-4"
-                     color="black"
+              <v-btn class="mr-4 ml-5"
+                     color="rgb(250, 115, 59)"
                      dark
                      rounded
                      to="/home"
@@ -42,7 +42,7 @@
             rounded="xl"
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="black"
+              <v-btn color="rgb(250, 115, 59)"
                      dark
                      rounded
                      v-bind="attrs"
@@ -55,26 +55,17 @@
             <v-list>
 
               <!-- gerenciamento de indicadores-->
-              <v-list-item to="/gerindicadores" v-if="usuarioLogado.tipo !== 'Auditor'">
+              <v-list-item to="/admunidades">
                 <v-list-item-title>
-                  <v-icon class="mr-3" small>mdi-finance</v-icon>
-                  Configurações de Indicadores
+                  <v-icon class="mr-3" small>mdi-office-building</v-icon>
+                  Configurações de Unidades e Cursos
                 </v-list-item-title>
               </v-list-item>
 
-              <!-- montagem de telas-->
-              <v-list-item to="/telas">
+              <v-list-item to="/admuser">
                 <v-list-item-title>
-                  <v-icon class="mr-4" small>mdi-chart-pie</v-icon>
-                  Criação de telas
-                </v-list-item-title>
-              </v-list-item>
-
-              <!-- montagem de Dashboards-->
-              <v-list-item to="/gerenciadasboard">
-                <v-list-item-title>
-                  <v-icon class="mr-4" small>mdi-view-dashboard-variant-outline</v-icon>
-                  Gerenciamento de Dashboards
+                  <v-icon class="mr-3" small>mdi-account</v-icon>
+                  Gerenciamento de Usuários
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -82,8 +73,10 @@
         </div>
       </template>
 
-      <!--Ferramentas Administrativas-->
-      <template v-if="usuarioEstaLogado && usuarioResetado && usuarioLogado.tipo === 'Administrador'">
+      <v-spacer></v-spacer>
+
+      <!--btn login para administradores-->
+      <template v-if="!usuarioEstaLogado">
         <div class="text-center">
           <v-menu
             bottom
@@ -92,93 +85,76 @@
             rounded="xl"
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ml-5"
-                     color="black"
+              <v-btn color="rgb(250, 115, 59)"
                      dark
                      rounded
                      v-bind="attrs"
                      v-on="on"
+                     @click="dialogLogin = true"
               >
-                <v-icon class="mr-3" small>mdi-wrench</v-icon>
-                Ferramentas Administrativas
+                <v-icon class="mr-3">mdi-account-star-outline</v-icon>
+                Administração
               </v-btn>
             </template>
 
-            <v-list>
-
-              <!-- gerenciamento de seções-->
-              <v-list-item to="/admsecoes">
-                <v-list-item-title>
-                  <v-icon class="pr-3" small>mdi-sitemap</v-icon>
-                  Gerenciamento de Seções
-                </v-list-item-title>
-              </v-list-item>
-
-              <!-- gerenciamento de usuários-->
-              <v-list-item to="/admuser">
-                <v-list-item-title>
-                  <v-icon class="pr-3" small>mdi-account</v-icon>
-                  Gerenciamento de Usuários
-                </v-list-item-title>
-              </v-list-item>
-
-              <!-- Ferramentas do sistema-->
-              <v-list-item to="/ferramentas">
-                <v-list-item-title>
-                  <v-icon class="pr-3" small>mdi-cog</v-icon>
-                  Ferramentas de Administrador
-                </v-list-item-title>
-              </v-list-item>
-
-              <!-- Configurações Gerais-->
-              <v-list-item to="/ferramentas">
-                <v-list-item-title>
-                  <v-icon class="pr-3" small>mdi-cogs</v-icon>
-                  Configurações Gerais
-                </v-list-item-title>
-              </v-list-item>
-
-              <!-- Backup-->
-              <!--
-              <v-list-item to="/bkupbanco">
-                <v-list-item-title>
-                  <v-icon class="pr-3" small>mdi-database</v-icon>
-                  Backup
-                </v-list-item-title>
-              </v-list-item>
-              -->
-
-            </v-list>
           </v-menu>
         </div>
       </template>
-
-      <!--Implementar o gerenciamento de seções-->
-
-      <v-spacer></v-spacer>
 
       <!-- BARRA DE NAVEGACAO LOGADO-->
       <OpcoesUsuario v-if="usuarioEstaLogado"/>
 
     </v-app-bar>
 
+    <!--Dialog Login Adm -->
+    <v-dialog v-model="dialogLogin" max-width="40%" persistent scrollable>
+      <v-card color="#748bab" rounded="xxl">
+        <!--titulo e botão fechar-->
+        <v-card-title class="justify-center text-center">
+          <v-row>
+            <v-col cols="2"></v-col>
+            <v-col class="text-5 white--text" cols="8">
+              <b>Login para Administradores</b>
+            </v-col>
+            <v-col cols="2" class="text-right">
+              <v-btn color="BLACK" icon @click="dialogLogin = false">X</v-btn>
+            </v-col>
+          </v-row>
+
+        </v-card-title>
+
+        <!-- card Text-->
+        <v-card-text>
+
+          <Login :tipo="tipo"></Login>
+
+        </v-card-text>
+        <v-card-actions class="pb-5">
+          <v-spacer></v-spacer>
+          <v-btn color="grey lighten-1" @click="dialogLogin = false">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>import OpcoesUsuario from './OpcoesUsuario'
 import config from '../../http/config'
 import {mapGetters} from 'vuex'
+import Login from '../login/Login.vue'
 
 export default {
   data: () => ({
     configSis: config,
     dialogGeneric70: false,
-    selectedTypeOfContent: ''
+    selectedTypeOfContent: '',
+    dialogLogin: false,
+    tipo: 'Admin'
   }),
 
-  components: {
-    OpcoesUsuario
-  },
+  components: {Login, OpcoesUsuario},
 
   computed: {
     ...mapGetters(['usuarioEstaLogado', 'usuarioLogado', 'paginaEmAtulizacao', 'usuarioResetado'])
@@ -205,5 +181,7 @@ export default {
 </script>
 
 <style>
-
+.bgConfig {
+  background-color: #ffffff !important;
+}
 </style>

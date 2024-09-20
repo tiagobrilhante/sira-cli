@@ -1,8 +1,8 @@
 {
-  "name": "SICC",
+  "name": "SIRA",
   "version": "1.0.0",
   "private": true,
-  "description": "Sistema Interno de Controle de Chamados",
+  "description": "Sistema Interno de Registro de Atendimentos",
   "author": "tiagobrilhante <codebrilhante>",
   "scripts": {
     "build": "node build/build.js",
@@ -71,7 +71,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "cross-spawn": "^5.0.1",
     "css-loader": "^0.28.0",
-    "eslint": "^4.15.0",
+    "eslint": "^4.19.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.7.1",

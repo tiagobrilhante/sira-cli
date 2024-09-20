@@ -23,9 +23,9 @@ export default {
 
 <style>
 .bgApp {
-  background-image: url('assets/img/cammo3.jpg') !important;
-  background-repeat: repeat;
-  background-size: contain;
-  background-color: #cccccc;
+  background-image: url('assets/img/estudante.jpg') !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-color: #ffffff !important;
 }
 </style>

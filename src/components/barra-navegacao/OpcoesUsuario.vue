@@ -16,10 +16,6 @@
               <v-row>
                 <v-col>
                   <b>Nome: </b> {{ usuarioLogado.nome }}<br>
-                  <b>Posto/Grad: </b> {{ usuarioLogado.posto_grad.pg }}<br>
-                  <b>Nome de Guerra: </b> {{ usuarioLogado.nome_guerra }}<br>
-                  <b>CPF: </b>{{ usuarioLogado.cpf }}<br>
-                  <b>Seção: </b>{{ usuarioLogado.secao.sigla }}<br>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -27,15 +23,16 @@
         </v-col>
       </v-row>
 
-      <!-- Botão de ajustes de usuário - First Name-->
+      <!-- Botão quando o usuário esta logado - First Name-->
       <template v-slot:activator="{ on, attrs }" v-if="usuarioResetado">
         <v-btn block
-               color="secondary"
+               color="rgb(250, 115, 59)"
                dark
                v-bind="attrs"
                v-on="on"
+               rounded
         >
-          <i class="fa fa-user mr-5"></i> {{ usuarioLogado.posto_grad.pg }} {{ usuarioLogado.nome_guerra}}
+          <v-icon class="mr-5">mdi-account</v-icon> {{ usuarioLogado.firstName }}
         </v-btn>
       </template>
 

@@ -3,7 +3,7 @@
   <v-footer
     app
     class="ma-0 pa-0"
-    color="#556b2f"
+    color="#015088"
   >
 
     <!-- Espaço para versoes-->
@@ -39,9 +39,7 @@
         <v-card-text>
 
           <v-alert class="text-justify" color="cyan">
-            <p>O Sistema CMA em Números, foi criado a pedido do Comando do CMA, para compor uma ferramenta de suporte a decisão, utilizando os conceitos de BIG DATA e gerenciamento de estatísticas.</p>
-            <p>Trata-se de um sistema que foi projetado para propiciar o consumo de indicadores relevantes de acordo com as necessidades do Comando, além de estabelecer como esses indicadores se relacionar.</p>
-            <p>O conteúdo é inserido pelos administradores cadastrados no sistema, que possui a capacidade de gerenciar de forma ativa qualquer tipo de métrica necessária ao processo decisório.</p>
+            <p>O Sistema Interno de Registro de Atendimentos (SIRA), foi criado a pedido da Coordenação da UniNorte, através do Projeto de Extensão 3 (segundo semestre de 2024), para compor uma ferramenta de auxílio aos alunos e coordenadores nas questões relacionadas a atendimentos feitos inicialmente na Unidade da Djalma Batista.</p>
             <p><b>Abaixo é possivel acompanhar o histórico de alterações das versões lançadas ao longo do tempo.</b></p>
           </v-alert>
 
@@ -94,15 +92,16 @@
         <v-card-text>
           <b></b>
           <br>
-          <p>TC Cav Tiago da Silva <strong>Brilhante</strong></p>
-          <p>O TC Brilhante é o chefe da Seção de Tecnologia da Informação / Seção de Desenvolvimento de Sistemas do Comando Militar da Amazônia</p>
-          <p>Atua como desenvolvedor sênior Full-Stack com especialização desenvolvimento WEB.</p>
+          <p>Tiago da Silva <strong>Brilhante</strong></p>
+          <p>Tiago da Silva Brilhante é aluno do Curso de Ciência da Computação da UniNorte.</p>
+          <p>Atua como desenvolvedor sênior Full-Stack/Full-Cicle com especialização desenvolvimento WEB.</p>
           <p>Trabalha com as seguintes linguagens:</p>
           <ul>
             <li>Java</li>
             <li>PHP</li>
             <li>JS</li>
             <li>Python</li>
+            <li>C++</li>
           </ul>
           <br>
 

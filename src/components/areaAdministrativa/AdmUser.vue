@@ -9,15 +9,17 @@
       <!--Banner-->
       <v-alert
         class="p-5"
+        color="#015088"
         elevation="21"
       >
         <v-row>
-          <v-col cols="9">
+          <v-col class="white--text" cols="9">
             <h2>
               <v-icon
                 class="mr-4"
+                color="white"
                 size="36">
-                fa fa-user
+                mdi-account
               </v-icon>
               Gerenciamento de Usuários
             </h2>
@@ -169,83 +171,22 @@
                   ></v-text-field>
                 </v-col>
 
-                <!-- nome_guerra -->
+                <!-- matricula -->
                 <v-col>
-                  <span class="pl-3">Nome Guerra (Obrigatório)</span>
+                  <span class="pl-3">Matricula (Obrigatório)</span>
                   <v-text-field
-                    v-model="editedUser.nome_guerra"
+                    v-model="editedUser.matricula"
                     class="ml-3"
                     dense
-                    label="Nome de Guerra"
+                    label="Matricula"
                     rounded
                     solo
                   ></v-text-field>
                 </v-col>
               </v-row>
 
-              <!-- cpf e postograd -->
+              <!-- tipo-->
               <v-row dense>
-
-                <!-- cpf-->
-                <v-col>
-                  <span class="pl-3">CPF (Obrigatório)</span>
-                  <v-text-field
-                    v-model="editedUser.cpf"
-                    v-mask-cpf
-                    :hint="cpfMessage"
-                    class="ml-3"
-                    dense
-                    label="CPF"
-                    name="cpf"
-                    persistent-hint
-                    placeholder="Insira o CPF do usuário"
-                    rounded
-                    solo
-                    @blur="checaErrosCPF"
-                  ></v-text-field>
-                </v-col>
-
-                <!-- posto_grad-->
-                <v-col>
-                  <span class="pl-3">Posto/Grad (Obrigatório)</span>
-                  <v-select
-                    v-model="editedUser.posto_grad_id"
-                    :items="posto_grad"
-                    class="ml-3"
-                    clearable
-                    dense
-                    item-text="pg"
-                    item-value="id"
-                    label="Selecione o Posto/Grad"
-                    name="posto_grad"
-                    rounded
-                    solo
-                  ></v-select>
-
-                </v-col>
-
-              </v-row>
-
-              <!--secao e tipo-->
-              <v-row dense>
-
-                <!-- seção -->
-                <v-col>
-                  <span class="pl-3">Seção (Obrigatório)</span>
-                  <v-autocomplete
-                    v-model="editedUser.secao_id"
-                    :items="secoes"
-                    class="ml-3"
-                    clearable
-                    dense
-                    item-text="sigla"
-                    item-value="id"
-                    label="Selecione a seção do usuário"
-                    name="secao"
-                    rounded
-                    solo
-                  ></v-autocomplete>
-                </v-col>
 
                 <!-- tipo -->
                 <v-col>
@@ -293,7 +234,7 @@
               class="mr-4">
               fa fa-exclamation-triangle
             </v-icon>
-            Você tem certeza que quer deletar o usuário {{ editedUser.email }}?
+            Você tem certeza que quer deletar o usuário {{ editedUser.nome }}?
             <v-icon
               class="ml-4">
               fa fa-exclamation-triangle
@@ -321,8 +262,7 @@
               class="mr-4">
               fa fa-exclamation-triangle
             </v-icon>
-            Você tem certeza que quer resetar a senha do usuário {{ editedUser.posto_grad.pg }}
-            {{ editedUser.nome_guerra }}?
+            Você tem certeza que quer resetar a senha do usuário {{ editedUser.nome }}?
             <v-icon
               class="ml-4">
               fa fa-exclamation-triangle
@@ -358,7 +298,6 @@
 </template>
 
 <script>import {logoutMixin} from '@/mixins'
-import {cpf} from 'cpf-cnpj-validator'
 import {mapGetters} from 'vuex'
 import config from '../../http/config'
 import BarraNavegacao from '../barra-navegacao/BarraNavegacao.vue'
@@ -370,8 +309,6 @@ export default {
     configSis: config,
     // options de select
     usuarios: [],
-    posto_grad: [],
-    secoes: [],
     // fim options select
     search: '',
     headers: [
@@ -381,29 +318,19 @@ export default {
         value: 'nome'
       },
       {
-        text: 'Posto/Grad',
+        text: 'Matrícula',
         align: 'start',
-        value: 'posto_grad.pg'
+        value: 'matricula'
       },
       {
-        text: 'Nome de Guerra',
+        text: 'Email',
         align: 'start',
-        value: 'nome_guerra'
-      },
-      {
-        text: 'CPF',
-        align: 'start',
-        value: 'cpf'
+        value: 'email'
       },
       {
         text: 'Tipo',
         align: 'start',
         value: 'tipo'
-      },
-      {
-        text: 'Seçao',
-        align: 'start',
-        value: 'secao.sigla'
       },
       {
         text: 'Status',
@@ -419,28 +346,22 @@ export default {
     ],
     defaultUser: {
       'nome': '',
-      'nome_guerra': '',
-      'cpf': '',
+      'matricula': '',
+      'telefone': '',
+      'email': '',
       'tipo': '',
-      'reset': false,
-      'secao_id': '',
-      'posto_grad_id': '',
-      'posto_grad': {},
-      'secao': {}
+      'reset': false
     },
     editedUser: {
       'nome': '',
-      'nome_guerra': '',
-      'cpf': '',
+      'matricula': '',
+      'telefone': '',
+      'email': '',
       'tipo': '',
-      'reset': false,
-      'secao_id': '',
-      'posto_grad_id': '',
-      'posto_grad': {},
-      'secao': {}
+      'reset': false
     },
     tipoAcao: '',
-    tiposUsuario: ['Administrador', 'Auditor', 'Usuário'],
+    tiposUsuario: ['Administrador Geral', 'Administrador'],
     dialogDelete: false,
     dialogReset: false,
     dialogAddEditUser: false,
@@ -452,9 +373,6 @@ export default {
   },
   async mounted () {
     await this.getUsers()
-    await this.getPostoGrad()
-    await this.getSecao()
-    // tenho que pegar as secoes
   },
   methods: {
 
@@ -463,30 +381,6 @@ export default {
         this.$http.get('users')
           .then(response => {
             this.usuarios = response.data
-          })
-          .catch(erro => console.log(erro))
-      } catch (e) {
-        console.log(e)
-      }
-    },
-
-    async getPostoGrad () {
-      try {
-        this.$http.get('pg')
-          .then(response => {
-            this.posto_grad = response.data
-          })
-          .catch(erro => console.log(erro))
-      } catch (e) {
-        console.log(e)
-      }
-    },
-
-    async getSecao () {
-      try {
-        this.$http.get('secao')
-          .then(response => {
-            this.secoes = response.data
           })
           .catch(erro => console.log(erro))
       } catch (e) {
@@ -520,11 +414,10 @@ export default {
       } else {
         let objetoParaEnvio = {}
         objetoParaEnvio['nome'] = this.editedUser.nome
-        objetoParaEnvio['nome_guerra'] = this.editedUser.nome_guerra
+        objetoParaEnvio['matricula'] = this.editedUser.matricula
+        objetoParaEnvio['telefone'] = this.editedUser.telefone
+        objetoParaEnvio['email'] = this.editedUser.email
         objetoParaEnvio['tipo'] = this.editedUser.tipo
-        objetoParaEnvio['secao_id'] = this.editedUser.secao_id
-        objetoParaEnvio['posto_grad_id'] = this.editedUser.posto_grad_id
-        objetoParaEnvio['cpf'] = this.editedUser.cpf
 
         if (this.tipoAcao === 'add') {
           // aqui eu vou adicionar o usuario
@@ -595,28 +488,6 @@ export default {
       })
     },
 
-    checaErrosCPF () {
-      if (this.editedUser.cpf === '') {
-        this.cpfMessage = 'Preencha o CPF'
-      } else if (!cpf.isValid(this.editedUser.cpf)) {
-        this.cpfMessage = 'Esse CPF é Inválido'
-      } else {
-        let objetoParaEnvio = {}
-        objetoParaEnvio['cpf'] = this.editedUser.cpf
-        try {
-          this.$http.post('users/checacpf/' + this.editedUser.id, objetoParaEnvio)
-            .then(response => {
-              this.cpfMessage = response.data
-            })
-            .catch(erro => console.log(erro))
-        } catch (e) {
-          this.$toastr.e(
-            'Houve um erro na tentativa de execução: <br>' + e, 'Erro!'
-          )
-        }
-      }
-    },
-
     validadoresCampos () {
       let msgRetornoErro = ''
       let contador = 0
@@ -625,32 +496,16 @@ export default {
         msgRetornoErro += '<li>O Nome não pode ser vazio.</li>'
         contador++
       }
-      if (this.editedUser.nome_guerra === '') {
-        msgRetornoErro += '<li>O Nome de Guerra não pode ser vazio.</li>'
+      if (this.editedUser.matricula === '') {
+        msgRetornoErro += '<li>O Campo Matrícula não pode ser vazio.</li>'
         contador++
       }
-      if (this.editedUser.posto_grad_id === '') {
-        msgRetornoErro += '<li>Selecione um posto/grad.</li>'
-        contador++
-      }
-      if (this.editedUser.secao_id === '') {
-        msgRetornoErro += '<li>Selecione uma seção.</li>'
+      if (this.editedUser.email === '') {
+        msgRetornoErro += '<li>O campo Email deve ser preenchido.</li>'
         contador++
       }
       if (this.editedUser.tipo === '') {
         msgRetornoErro += '<li>Selecione um tipo de usuário.</li>'
-        contador++
-      }
-      if (this.editedUser.cpf === '') {
-        msgRetornoErro += '<li>O CPF não pode ser vazio.</li>'
-        contador++
-      }
-      if (!cpf.isValid(this.editedUser.cpf)) {
-        msgRetornoErro += '<li>O CPF informado não é válido.</li>'
-        contador++
-      }
-      if (this.cpfMessage === 'CPF já registrado por outro usuário.') {
-        msgRetornoErro += '<li>CPF já registrado por outro usuário.</li>'
         contador++
       }
       msgRetornoErro = '<ul>' + msgRetornoErro + '</ul>'
@@ -681,7 +536,4 @@ export default {
 </script>
 
 <style>
-.bgConfig {
-  background-color: #CFE0BC !important;
-}
 </style>
