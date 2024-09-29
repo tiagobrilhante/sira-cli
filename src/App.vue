@@ -1,5 +1,7 @@
 <template>
-  <v-app id="inspire" class="bgApp">
+  <v-app
+    id="inspire"
+    class="bgApp">
     <router-view/>
     <Footer/>
   </v-app>
@@ -14,9 +16,9 @@ export default {
   data () {
     return {}
   },
+  computed: {},
   created () {
   },
-  computed: {},
   methods: {}
 }
 </script>

@@ -7,27 +7,35 @@
       color="#6b5252"
     >
 
-      <v-toolbar-title>{{configSis.nomeSis}}
-        <v-chip class="ml-4" small> {{configSis.labelSis}}</v-chip>
+      <v-toolbar-title>{{ configSis.nomeSis }}
+        <v-chip
+          class="ml-4"
+          small> {{ configSis.labelSis }}
+        </v-chip>
       </v-toolbar-title>
 
-      <v-spacer></v-spacer>
+      <v-spacer/>
 
       <v-btn @click="retornaHome()">Voltar</v-btn>
-      <v-btn @click="retornaTotem()" class="ml-3">Sair</v-btn>
+      <v-btn
+        class="ml-3"
+        @click="retornaTotem()">Sair
+      </v-btn>
 
     </v-app-bar>
     <br><br>
     <v-row>
 
-      <v-col cols="6" offset="3">
+      <v-col
+        cols="6"
+        offset="3">
 
         <v-alert type="error">
 
           <h4>Erro no servidor!</h4>
 
           <br>
-          <v-divider></v-divider>
+          <v-divider/>
           <br>
           <p>Houve um erro na interpretação do seu pedido.</p>
           <p>Muito provavelmente isso ocorreu por uma falha no servidor.</p>
@@ -47,13 +55,19 @@ import {mapGetters} from 'vuex'
 import config from '../../http/config'
 
 export default {
-  name: 'erro500',
-  mixins: [logoutMixin],
+  name: 'Erro500',
   components: {},
+  mixins: [logoutMixin],
   data: vm => ({
     configSis: config,
     mensagemErro: ''
   }),
+  computed: {
+    ...mapGetters(['usuarioLogado'])
+  },
+  mounted () {
+    this.mensagemErro = this.$route.params.error
+  },
   methods: {
     retornaTotem () {
       this.$store.commit('DESLOGAR_USUARIO')
@@ -62,12 +76,6 @@ export default {
     retornaHome () {
       this.$router.push({name: 'home'})
     }
-  },
-  computed: {
-    ...mapGetters(['usuarioLogado'])
-  },
-  mounted () {
-    this.mensagemErro = this.$route.params.error
   }
 }
 

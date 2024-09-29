@@ -1,5 +1,7 @@
 <template>
-  <v-alert elevation="12" rounded="xxl">
+  <v-alert
+    elevation="12"
+    rounded="xxl">
     Digite a sua matricula
 
     <br>

@@ -2,10 +2,12 @@
   <v-main class="bgConfig">
 
     <!--Barra de navegação da área administrativa-->
-    <BarraNavegacao></BarraNavegacao>
+    <BarraNavegacao/>
 
     <!-- container básico-->
-    <v-container class="mb-0" fluid>
+    <v-container
+      class="mb-0"
+      fluid>
       <!-- Banner-->
       <v-row>
 
@@ -156,18 +158,18 @@ import config from '../../http/config'
 import BarraNavegacao from '../../components/barra-navegacao/BarraNavegacao.vue'
 
 export default {
-  name: 'home',
-  mixins: [logoutMixin],
+  name: 'Home',
   components: {BarraNavegacao},
+  mixins: [logoutMixin],
   data: () => ({
     configSis: config
   }),
   computed: {
     ...mapGetters(['usuarioLogado'])
   },
+  watch: {},
   created () {
   },
-  watch: {},
 
   mounted () {
   },

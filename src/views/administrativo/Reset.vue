@@ -1,6 +1,6 @@
 <template>
   <v-main>
-    <BarraNavegacao></BarraNavegacao>
+    <BarraNavegacao/>
 
     <v-container fluid>
       <v-row class="mt-5">
@@ -14,7 +14,9 @@
             rounded="lg"
           >
             <v-row>
-              <v-col cols="10" offset="1">
+              <v-col
+                cols="10"
+                offset="1">
                 <div class="text-center pt-5">
                   <h1>Bem-vindo ao sistema CMA em Números!</h1>
                   <p>Sistema de Gerenciamento de Indicadores do CMA</p>
@@ -35,8 +37,8 @@
                         elevation="10"
                         outlined
                         rounded="lg"
-                      ><i class="fa fa-lock"></i>
-                        <span class="pl-5"></span>
+                      ><i class="fa fa-lock"/>
+                        <span class="pl-5"/>
                         Altere sua senha
                       </v-banner>
                     </v-col>
@@ -58,12 +60,10 @@
                               cols="12"
                             >
                               <v-text-field
+                                v-model="password"
                                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                 :error-messages="passwordErrors"
                                 :type="show1 ? 'text' : 'password'"
-                                @blur="$v.password.$touch()"
-                                @click:append="show1 = !show1"
-                                @input="$v.password.$touch()"
                                 clearable
                                 counter
                                 dense
@@ -72,8 +72,10 @@
                                 name="password"
                                 outlined
                                 required
-                                v-model="password"
-                              ></v-text-field>
+                                @blur="$v.password.$touch()"
+                                @input="$v.password.$touch()"
+                                @click:append="show1 = !show1"
+                              />
                             </v-col>
                           </v-row>
 
@@ -93,9 +95,10 @@
                             </v-col>
 
                             <v-col>
-                            <v-alert
-                              type="warning"
-                            > Ao clicar em "ALTERAR SENHA", você será levado novamente para a tela de Login</v-alert>
+                              <v-alert
+                                type="warning"
+                              > Ao clicar em "ALTERAR SENHA", você será levado novamente para a tela de Login
+                              </v-alert>
                             </v-col>
                           </v-row>
                         </v-container>
@@ -123,13 +126,13 @@ import BarraNavegacao from '../../components/barra-navegacao/BarraNavegacao.vue'
 
 export default {
   components: {BarraNavegacao},
+  mixins: [logoutMixin, validationMixin],
   data () {
     return {
       show1: false,
       password: ''
     }
   },
-  mixins: [logoutMixin, validationMixin],
   validations: {
     password: {required}
   },

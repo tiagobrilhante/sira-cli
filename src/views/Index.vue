@@ -1,21 +1,34 @@
 <template>
   <v-main>
 
-    <BarraNavegacao></BarraNavegacao>
+    <BarraNavegacao/>
 
     <v-container>
       <br>
       <!--cabeçalho-->
       <v-row>
 
-        <v-col cols="8" offset="2">
-          <v-alert class="ma-0 bordaBranca" color="#015088" dense rounded="xxl">
+        <v-col
+          cols="8"
+          offset="2">
+          <v-alert
+            class="ma-0 bordaBranca"
+            color="#015088"
+            dense
+            rounded="xxl">
 
             <v-row>
-              <v-col class="text-left align-self-start align-content-start" cols="4">
-                <img :src="require('@/assets/icons/ser_educacional_branco.png')" alt="Logo Uninorte" width="100%">
+              <v-col
+                class="text-left align-self-start align-content-start"
+                cols="4">
+                <img
+                  :src="require('@/assets/icons/ser_educacional_branco.png')"
+                  alt="Logo Uninorte"
+                  width="100%">
               </v-col>
-              <v-col class="text-center" cols="8">
+              <v-col
+                class="text-center"
+                cols="8">
                 <h1 class="white--text pt-4"><i>{{ configSis.nomeSis }}</i></h1>
                 <h3 class="white--text">{{ configSis.labelSis }}</h3>
               </v-col>
@@ -27,14 +40,30 @@
 
       <!--seleção de opcoes-->
       <v-row>
-        <v-col cols="8" offset="2">
-          <v-alert class="text-center bordaBranca" color="#015088" rounded="xxl">
-            <img :src="require('@/assets/img/logo-ser-branca.png')" alt="Logo Uninorte" width="200px"> <br><br>
-            <v-btn block class="white--text" color="rgb(250, 115, 59)" @click="openDialog('solicita')">Abrir uma
+        <v-col
+          cols="8"
+          offset="2">
+          <v-alert
+            class="text-center bordaBranca"
+            color="#015088"
+            rounded="xxl">
+            <img
+              :src="require('@/assets/img/logo-ser-branca.png')"
+              alt="Logo Uninorte"
+              width="200px"> <br><br>
+            <v-btn
+              block
+              class="white--text"
+              color="rgb(250, 115, 59)"
+              @click="openDialog('solicita')">Abrir uma
               solicitação
             </v-btn>
             <br>
-            <v-btn block class="white--text" color="rgb(250, 115, 59)" @click="openDialog('acompanha')">Acompanhar
+            <v-btn
+              block
+              class="white--text"
+              color="rgb(250, 115, 59)"
+              @click="openDialog('acompanha')">Acompanhar
               solicitações
               abertas
             </v-btn>
@@ -45,17 +74,27 @@
     </v-container>
 
     <!--Dialog Geral -->
-    <v-dialog v-model="dialogGeral" max-width="90%" persistent scrollable>
-      <v-card color="#748bab" rounded="xxl">
+    <v-dialog
+      v-model="dialogGeral"
+      max-width="90%"
+      persistent
+      scrollable>
+      <v-card
+        color="#748bab"
+        rounded="xxl">
         <!--titulo e botão fechar-->
         <v-card-title class="justify-center text-center">
           <v-row>
-            <v-col cols="1"></v-col>
-            <v-col class="text-h4 white--text" cols="10">
+            <v-col cols="1"/>
+            <v-col
+              class="text-h4 white--text"
+              cols="10">
               <b>{{ objetoDialog.cabecalho }}</b>
             </v-col>
             <v-col cols="1">
-              <v-btn color="grey lighten-1" @click="dialogGeral = false">X</v-btn>
+              <v-btn
+                color="grey lighten-1"
+                @click="dialogGeral = false">X</v-btn>
             </v-col>
           </v-row>
 
@@ -64,13 +103,17 @@
         <!-- card Text-->
         <v-card-text>
 
-          <AberturaChamado v-if="objetoDialog.action_type === 'Solicitação'"></AberturaChamado>
-          <Login :tipo="tipo" v-if="objetoDialog.action_type === 'Verificação'"></Login>
+          <AberturaChamado v-if="objetoDialog.action_type === 'Solicitação'"/>
+          <Login
+            v-if="objetoDialog.action_type === 'Verificação'"
+            :tipo="tipo"/>
 
         </v-card-text>
         <v-card-actions class="pb-5">
-          <v-spacer></v-spacer>
-          <v-btn color="grey lighten-1" @click="dialogGeral = false">
+          <v-spacer/>
+          <v-btn
+            color="grey lighten-1"
+            @click="dialogGeral = false">
             Fechar
           </v-btn>
         </v-card-actions>

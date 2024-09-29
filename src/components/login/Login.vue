@@ -3,9 +3,10 @@
 
     <v-row dense>
       <v-col>
-        <v-card class="bordaAzul"
-                elevation="10"
-                rounded="xxl"
+        <v-card
+          class="bordaAzul"
+          elevation="10"
+          rounded="xxl"
         >
 
           <!--card title-->
@@ -53,7 +54,7 @@
                       outlined
                       required
                       @click:append="show1 = !show1"
-                    ></v-text-field>
+                    />
                   </v-col>
                 </v-row>
 
@@ -61,11 +62,12 @@
                 <v-row dense>
                   <!--logar-->
                   <v-col>
-                    <v-btn block
-                           class="white--text"
-                           color="#015088"
-                           elevation="2"
-                           type="submit"
+                    <v-btn
+                      block
+                      class="white--text"
+                      color="#015088"
+                      elevation="2"
+                      type="submit"
                     >Entrar
                     </v-btn>
                   </v-col>
@@ -84,6 +86,12 @@
 <script>import config from '../../http/config'
 
 export default {
+  props: {
+    tipo: {
+      type: String,
+      required: true
+    }
+  },
   data () {
     return {
       configSis: config,
@@ -95,9 +103,6 @@ export default {
     }
   },
   computed: {},
-  props: {
-    tipo: String
-  },
   methods: {
     efetuarLogin () {
       if (this.usuario.matricula === '' || this.usuario.password === '') {

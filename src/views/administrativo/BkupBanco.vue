@@ -1,11 +1,11 @@
 <template>
   <v-main class="bgConfig">
-    <BarraNavegacao></BarraNavegacao>
+    <BarraNavegacao/>
 
     <v-container fluid>
 
       <v-row>
-        <v-col cols="1"></v-col>
+        <v-col cols="1"/>
         <v-col> <!--Banner-->
           <v-alert
             class="p-5 rounded-xl"
@@ -23,7 +23,11 @@
                 </h2>
               </v-col>
               <v-col class="text-right">
-                <v-btn :loading="loadingBackup" @click="geraBkup" class="primary" small>Gerar Backup</v-btn>
+                <v-btn
+                  :loading="loadingBackup"
+                  class="primary"
+                  small
+                  @click="geraBkup">Gerar Backup</v-btn>
               </v-col>
             </v-row>
           </v-alert>
@@ -45,11 +49,12 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    :href="urlDownload + item.path" class=""
+                    :href="urlDownload + item.path"
+                    v-bind="attrs"
+                    class=""
                     color="success"
                     small
                     target="_blank"
-                    v-bind="attrs"
                     v-on="on"
                   >
                     <v-icon>
@@ -63,7 +68,7 @@
 
           </v-data-table>
         </v-col>
-        <v-col cols="1"></v-col>
+        <v-col cols="1"/>
       </v-row>
 
     </v-container>
@@ -100,6 +105,11 @@ export default {
       ],
       urlDownload: config.urlDownload
     }
+  },
+  computed: {
+
+    ...mapGetters(['usuarioLogado'])
+
   },
   async mounted () {
     await this.getListaBkup()
@@ -149,12 +159,6 @@ export default {
         return dh
       }
     }
-  },
-
-  computed: {
-
-    ...mapGetters(['usuarioLogado'])
-
   }
 }
 </script>

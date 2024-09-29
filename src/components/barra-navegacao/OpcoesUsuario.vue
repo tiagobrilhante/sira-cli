@@ -24,26 +24,33 @@
       </v-row>
 
       <!-- Botão quando o usuário esta logado - First Name-->
-      <template v-slot:activator="{ on, attrs }" v-if="usuarioResetado">
-        <v-btn block
-               color="rgb(250, 115, 59)"
-               dark
-               v-bind="attrs"
-               v-on="on"
-               rounded
+      <template
+        v-slot:activator="{ on, attrs }"
+        v-if="usuarioResetado">
+        <v-btn
+          v-bind="attrs"
+          block
+          color="rgb(250, 115, 59)"
+          dark
+          rounded
+          v-on="on"
         >
-          <v-icon class="mr-5">mdi-account</v-icon> {{ usuarioLogado.firstName }}
+          <v-icon class="mr-5">mdi-account</v-icon>
+          {{ usuarioLogado.firstName }}
         </v-btn>
       </template>
 
       <!-- Botão de ajustes de usuário - First Name-->
-      <template v-slot:activator="{ on, attrs }" v-else>
-        <v-btn block
-               color="secondary"
-               dark
-               v-bind="attrs"
-               v-on="on"
-               to="/"
+      <template
+        v-slot:activator="{ on, attrs }"
+        v-else>
+        <v-btn
+          v-bind="attrs"
+          block
+          color="secondary"
+          dark
+          to="/"
+          v-on="on"
         >
           Sair
         </v-btn>
@@ -54,7 +61,9 @@
         <!--alterar senha-->
         <v-list-item @click.prevent="mudarSenhaAbrir">
           <v-list-item-title>
-            <v-icon small class="mr-3">mdi-lock</v-icon>
+            <v-icon
+              class="mr-3"
+              small>mdi-lock</v-icon>
             Alterar Senha
           </v-list-item-title>
         </v-list-item>
@@ -62,7 +71,9 @@
         <!--Efetuar logout-->
         <v-list-item @click.prevent="retornaTotem">
           <v-list-item-title>
-            <v-icon small class="mr-3">mdi-logout</v-icon>
+            <v-icon
+              class="mr-3"
+              small>mdi-logout</v-icon>
             Sair do Sistema
           </v-list-item-title>
         </v-list-item>
@@ -71,26 +82,31 @@
     </v-menu>
 
     <!--Dialog para alteração de senha-->
-    <v-dialog max-width="800px" v-model="dialogSenha">
+    <v-dialog
+      v-model="dialogSenha"
+      max-width="800px">
       <v-card>
-        <v-card-title class="justify-center" primary-title> Alteração de senha de usuário</v-card-title>
+        <v-card-title
+          class="justify-center"
+          primary-title> Alteração de senha de usuário</v-card-title>
         <v-form @submit.prevent="alterarSenha">
           <v-card-text>
             <h3><b>Insira a sua Nova Senha</b></h3><br>
-            <v-alert border="left"
-                     dense
-                     type="warning">
+            <v-alert
+              border="left"
+              dense
+              type="warning">
               Ao alterar a sua senha, você será desconectado do {{ configSis.nomeSis }} para realizar um novo login.
             </v-alert>
-            <v-divider></v-divider>
+            <v-divider/>
             <br>
             <!--Password-->
             <v-row>
               <v-col>
                 <v-text-field
+                  v-model="password"
                   :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                   :type="show1 ? 'text' : 'password'"
-                  @click:append="show1 = !show1"
                   clearable
                   counter
                   dense
@@ -99,13 +115,13 @@
                   name="password"
                   outlined
                   required
-                  v-model="password"
-                ></v-text-field>
+                  @click:append="show1 = !show1"
+                />
               </v-col>
             </v-row>
           </v-card-text>
           <v-card-actions class="pb-5">
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-btn
               color="primary"
               elevation="2"
@@ -113,9 +129,9 @@
             >Alterar senha
             </v-btn>
             <v-btn
-              @click="dialogSenha = false"
               color="error"
-              elevation="2">Cancelar
+              elevation="2"
+              @click="dialogSenha = false">Cancelar
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -132,6 +148,7 @@ import {required} from 'vuelidate/lib/validators'
 import config from '../../http/config'
 
 export default {
+  mixins: [logoutMixin, validationMixin],
   data: () => ({
     dialogSenha: false,
     show1: false,
@@ -141,8 +158,6 @@ export default {
   validations: {
     password: {required}
   },
-  mixins: [logoutMixin, validationMixin],
-
   computed: {
     passwordErrors () {
       const errors = []
