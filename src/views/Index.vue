@@ -53,6 +53,7 @@
               width="200px"> <br><br>
             <v-btn
               block
+              rounded
               class="white--text"
               color="rgb(250, 115, 59)"
               @click="openDialog('solicita')">Abrir uma
@@ -60,6 +61,7 @@
             </v-btn>
             <br>
             <v-btn
+              rounded
               block
               class="white--text"
               color="rgb(250, 115, 59)"
@@ -80,7 +82,7 @@
       persistent
       scrollable>
       <v-card
-        color="#748bab"
+        color="#015088"
         rounded="xxl">
         <!--titulo e botão fechar-->
         <v-card-title class="justify-center text-center">
@@ -91,10 +93,14 @@
               cols="10">
               <b>{{ objetoDialog.cabecalho }}</b>
             </v-col>
-            <v-col cols="1">
+            <v-col
+              cols="1"
+              class="text-right">
               <v-btn
-                color="grey lighten-1"
-                @click="dialogGeral = false">X</v-btn>
+                rounded
+                class="white--text"
+                color="rgb(250, 115, 59)"
+                @click="closeAndReset()"><v-icon color="white">mdi-close-circle-outline</v-icon></v-btn>
             </v-col>
           </v-row>
 
@@ -103,7 +109,9 @@
         <!-- card Text-->
         <v-card-text>
 
-          <AberturaChamado v-if="objetoDialog.action_type === 'Solicitação'"/>
+          <AberturaChamado
+            v-if="objetoDialog.action_type === 'Solicitação'"
+            ref="aberturaChamado"/>
           <Login
             v-if="objetoDialog.action_type === 'Verificação'"
             :tipo="tipo"/>
@@ -112,9 +120,13 @@
         <v-card-actions class="pb-5">
           <v-spacer/>
           <v-btn
-            color="grey lighten-1"
-            @click="dialogGeral = false">
-            Fechar
+            rounded
+            class="white--text mr-2"
+            color="rgb(250, 115, 59)"
+            @click="closeAndReset()">
+            <v-icon
+              color="white"
+              class="mr-3">mdi-close-circle-outline</v-icon> Fechar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -147,7 +159,14 @@ export default {
   computed: {},
   methods: {
     openDialog (acao) {
-      console.log(acao)
+      this.dialogGeral = true
+
+      this.$nextTick(() => {
+        if (acao === 'solicita' && this.$refs.aberturaChamado) {
+          this.$refs.aberturaChamado.matricula = ''
+        }
+      })
+
       if (acao === 'solicita') {
         this.objetoDialog = {
           'cabecalho': 'Solicitação de Atendimento',
@@ -161,8 +180,11 @@ export default {
           'action_type': 'Verificação'
         }
       }
+    },
 
-      this.dialogGeral = true
+    closeAndReset () {
+      this.dialogGeral = false
+      this.$root.$emit('reset-matricula')
     }
   }
 }

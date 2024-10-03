@@ -156,8 +156,12 @@
             <li
               v-for="turno in item.turnos"
               :key="turno.id">
-              {{ turno.horario }} - {{ turno.identificador_horario }} - ( {{ turno.qtd_turmas }} turma<span
-              v-if="turno.qtd_turmas > 1">s</span> )
+              {{ turno.horario }} - {{ turno.identificador_horario }}
+              <ul
+                v-for="pt in turno.periodo_turma"
+                :key="pt.id">
+                <li>{{ pt.periodo }}º Período - ( {{ pt.qtd_turmas_por_periodo }} turma<span v-if="pt.qtd_turmas_por_periodo > 1">s</span> )</li>
+              </ul>
             </li>
           </ul>
           <v-chip
@@ -487,8 +491,6 @@ export default {
 
       // Incrementa a key para forçar a re-renderização do componente filho
       this.asyncComponentKey += 1
-
-      console.log(this.asyncComponentKey)
     },
     async handleTurmaHabilitada () {
       // Atualiza os cursos vigentes
