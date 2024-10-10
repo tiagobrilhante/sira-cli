@@ -8,14 +8,19 @@
       <v-col cols="11">
         <span class="pl-3">Digite sua Matricula</span>
         <v-text-field
+          v-mask="'#########'"
           v-model="matricula"
+          :rules="[v => /^\d{9}$/.test(v) || 'A matrícula deve conter exatamente 9 dígitos']"
           dense
           label="Matricula"
+          maxlength="9"
           rounded
           solo
           @keydown.enter="pesquisaMatricula"
         />
       </v-col>
+
+      <!-- btn para pesquisar-->
       <v-col cols="1">
         <v-btn
           class="mt-5"
@@ -53,15 +58,28 @@
       </v-row>
     </v-alert>
 
-    <v-alert
+    <Cadastro
       v-if="showCadastro"
-      rounded="xxl"
-      elevation="5">
-      <Cadastro/>
-    </v-alert>
+      :matricula="matriculaPraCadastro"
+      @cancela-cadastro="cancelaCadastro"/>
 
-    o usuário digita a matricula, se ela existir, será convidado a inserir a senha<br>
-    caso contrário, será aberto o formulário de auto-cadastro e logo a baixo já vai aparecer o form de inserir dados
+    <v-row v-if="showInputSenha">
+      <v-col><h1 class="pt-7"><b>Matricula: </b> {{ matricula }}</h1></v-col>
+      <v-col>
+        <span class="pl-3">Digite sua Senha</span>
+        <v-text-field
+          v-model="password"
+          dense
+          label="Senha"
+          type="password"
+          rounded
+          solo
+          @keydown.enter="fazLogin"
+        />
+      </v-col>
+    </v-row>
+
+    <FormularioAtendimento v-if="usuarioEstaLogado"/>
   </v-alert>
 </template>
 
@@ -69,17 +87,22 @@
 import {mapGetters} from 'vuex'
 import config from '../../http/config'
 import Cadastro from '../cadastro/Cadastro.vue'
+import FormularioAtendimento from './FormularioAtendimento.vue'
 
 export default {
-  components: {Cadastro},
+  components: {FormularioAtendimento, Cadastro},
   mixins: [logoutMixin],
   data: () => ({
     configSis: config,
     users: [],
     matricula: '',
+    password: '',
     returnErrorMatricula: false,
     mostraPesquisaMatricula: true,
-    showCadastro: false
+    showCadastro: false,
+    showInputSenha: false,
+    matriculaPraCadastro: '',
+    msgErroMatricula: []
   }),
   computed: {
     ...mapGetters(['usuarioLogado', 'usuarioEstaLogado'])
@@ -117,25 +140,29 @@ export default {
     },
 
     pesquisaMatricula () {
-      let objetoparaEnvio = {}
-      objetoparaEnvio['matricula'] = this.matricula
+      if (this.validaMatricula(this.matricula)) {
+        let objetoparaEnvio = {}
+        objetoparaEnvio['matricula'] = this.matricula
 
-      try {
-        this.$http.post('pesquisamatricula', objetoparaEnvio)
-          .then(response => {
-            console.log(response.data)
-            this.mostraPesquisaMatricula = false
+        try {
+          this.$http.post('pesquisamatricula', objetoparaEnvio)
+            .then(response => {
+              this.mostraPesquisaMatricula = false
 
-            if (response.data === 'Matrícula não encontrada.') {
-              this.returnErrorMatricula = true
-              this.matricula = ''
-            } else {
-              this.returnErrorMatricula = false
-            }
-          })
-          .catch(erro => console.log(erro))
-      } catch (e) {
-        console.log(e)
+              if (response.data === 'Matrícula não encontrada.') {
+                this.returnErrorMatricula = true
+                this.matriculaPraCadastro = this.matricula
+                this.matricula = ''
+                this.showInputSenha = false
+              } else {
+                this.returnErrorMatricula = false
+                this.showInputSenha = true
+              }
+            })
+            .catch(erro => console.log(erro))
+        } catch (e) {
+          console.log(e)
+        }
       }
     },
 
@@ -147,13 +174,87 @@ export default {
 
     openCompenentCadastro () {
       this.returnErrorMatricula = false
-      console.log('oi')
       this.showCadastro = true
+    },
+    cancelaCadastro () {
+      this.showCadastro = false
+      this.mostraPesquisaMatricula = true
+    },
+
+    mostrarToastrPersonalizado (msgretorno) {
+      this.$toastr.Add({
+        title: 'Erro!',
+        msg: `<div style="padding: 20px;">${msgretorno}</div>`,
+        type: 'error',
+        timeout: 8000, // 10 segundos
+        progressBar: true,
+        closeOnHover: true,
+        closeButton: true,
+        onclick: null,
+        debug: true,
+        preventDuplicates: true,
+        classNames: ['toastr-grande'] // Adiciona uma classe personalizada
+      })
+    },
+
+    validaMatricula (matricula) {
+      this.msgErroMatricula = []
+      if (matricula === '') {
+        this.msgErroMatricula.push('<li>O campo matricula não pode ser vazio.</li>')
+      }
+      if (matricula.length !== 9) {
+        this.msgErroMatricula.push('<li>O campo matricula deve possuir 9 digitos. </li>')
+      }
+      // Verifica se contém apenas dígitos de 0 a 9
+      if (!/^\d+$/.test(matricula)) {
+        this.msgErroMatricula.push('<li>O campo matricula deve conter apenas dígitos de 0 a 9.</li>')
+      }
+
+      if (this.msgErroMatricula.length > 0) {
+        let msgretorno = '<ul>'
+        for (let i = 0; i < this.msgErroMatricula.length; i++) {
+          msgretorno += this.msgErroMatricula[i]
+        }
+        msgretorno += '</ul>'
+        this.mostrarToastrPersonalizado(msgretorno)
+        return false
+      } else {
+        return true
+      }
+    },
+
+    fazLogin () {
+      this.$store.dispatch('efetuarLogin', {
+        matricula: this.matricula,
+        password: this.password
+      }).then(() => {
+        if (this.usuarioEstaLogado) {
+          this.$toastr.Add({
+            title: 'Sucesso!',
+            msg: 'Login efetuado com sucesso!',
+            type: 'success',
+            timeout: 5000
+          })
+          this.showInputSenha = false
+          this.mostraPesquisaMatricula = false
+        } else {
+          this.$toastr.Add({
+            title: 'Erro!',
+            msg: 'Matrícula ou senha inválida!',
+            type: 'error',
+            timeout: 5000
+          })
+        }
+      })
     }
   }
 }
 
 </script>
 <style>
-
+.toastr-grande {
+  min-width: 550px; /* Aumenta o tamanho apenas para este toastr */
+  max-width: 700px;
+  font-size: 18px;
+}
 </style>

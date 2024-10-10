@@ -140,10 +140,11 @@
 import BarraNavegacao from '../components/barra-navegacao/BarraNavegacao'
 import AberturaChamado from '../components/chamados/AberturaChamado'
 import Login from '../components/login/Login.vue'
+import Cadastro from '../components/cadastro/Cadastro.vue'
 
 export default {
 
-  components: {BarraNavegacao, AberturaChamado, Login},
+  components: {Cadastro, BarraNavegacao, AberturaChamado, Login},
   data () {
     return {
       configSis: config,
@@ -183,8 +184,14 @@ export default {
     },
 
     closeAndReset () {
+      this.$store.commit('DESLOGAR_USUARIO')
       this.dialogGeral = false
       this.$root.$emit('reset-matricula')
+      this.objetoDialog = {
+        cabecalho: '',
+        txt_button: '',
+        action_type: ''
+      }
     }
   }
 }

@@ -842,7 +842,6 @@ export default {
     },
 
     getByTipo (tipoUserSelected) {
-      console.log(tipoUserSelected)
     },
 
     openDialogVerCursoUser (item) {

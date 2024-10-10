@@ -65,13 +65,20 @@ const getters = {
 }
 
 const vuexLocal = new VuexPersistence({
-  storage: window.localStorage
+  storage: window.sessionStorage
 })
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: estado,
   mutations,
   actions,
   plugins: [vuexLocal.plugin],
   getters
 })
+
+// Add event listener to clear Vuex state on page refresh
+window.addEventListener('beforeunload', () => {
+  store.commit('DESLOGAR_USUARIO')
+})
+
+export default store

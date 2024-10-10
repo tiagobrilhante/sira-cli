@@ -495,8 +495,7 @@ export default {
 
     async doDeletaTurma () {
       try {
-        const response = await this.$http.delete('periodoturma/' + this.periodoTurmaSelected.id)
-        console.log(response)
+        await this.$http.delete('periodoturma/' + this.periodoTurmaSelected.id)
 
         this.$toastr.s(
           'Turma Excluída com sucesso!', 'Sucesso!'
