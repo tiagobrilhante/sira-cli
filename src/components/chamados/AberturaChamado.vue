@@ -4,7 +4,7 @@
     rounded="xxl">
 
     <!-- pesquisa matricula-->
-    <v-row v-if="mostraPesquisaMatricula">
+    <v-row v-if="mostraPesquisaMatricula && !usuarioEstaLogado">
       <v-col cols="11">
         <span class="pl-3">Digite sua Matricula</span>
         <v-text-field
@@ -63,6 +63,7 @@
       :matricula="matriculaPraCadastro"
       @cancela-cadastro="cancelaCadastro"/>
 
+    <!-- digita a senha se tem uma matricula no retorno-->
     <v-row v-if="showInputSenha">
       <v-col><h1 class="pt-7"><b>Matricula: </b> {{ matricula }}</h1></v-col>
       <v-col>
@@ -79,7 +80,9 @@
       </v-col>
     </v-row>
 
-    <FormularioAtendimento v-if="usuarioEstaLogado"/>
+    <FormularioAtendimento
+      v-if="usuarioEstaLogado"
+      @countdown-finished="onCountdownFinished"/>
   </v-alert>
 </template>
 
@@ -120,6 +123,7 @@ export default {
   async mounted () {
     this.$root.$on('reset-matricula', this.tentaNovamentePesquisaMatricula)
   },
+
   beforeDestroy () {
     // Certificando-se de remover o listener quando o componente for destruído
     this.$root.$off('reset-matricula', this.tentaNovamentePesquisaMatricula)
@@ -176,6 +180,7 @@ export default {
       this.returnErrorMatricula = false
       this.showCadastro = true
     },
+
     cancelaCadastro () {
       this.showCadastro = false
       this.mostraPesquisaMatricula = true
@@ -246,6 +251,10 @@ export default {
           })
         }
       })
+    },
+
+    onCountdownFinished () {
+      this.$emit('close-and-reset')
     }
   }
 }

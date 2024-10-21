@@ -4,6 +4,7 @@
     <v-row dense>
       <v-col>
         <v-card
+          v-if="!usuarioEstaLogado"
           class="bordaAzul"
           elevation="10"
           rounded="xxl"
@@ -19,16 +20,20 @@
 
           <!--card text-->
           <v-card-text>
-            <v-form @submit.prevent="efetuarLogin">
+            <v-form
+              @submit.prevent="efetuarLogin">
               <v-container>
 
                 <!--matricula-->
                 <v-row no-gutters>
                   <v-col>
                     <v-text-field
+                      v-mask="'#########'"
                       v-model="usuario.matricula"
+                      :rules="[v => /^\d{9}$/.test(v) || 'A matrícula deve conter exatamente 9 dígitos']"
                       clearable
                       dense
+                      maxlength="9"
                       label="Matricula"
                       name="matricula"
                       outlined
@@ -84,8 +89,11 @@
 </template>
 
 <script>import config from '../../http/config'
+import {logoutMixin} from '@/mixins'
+import {mapGetters} from 'vuex'
 
 export default {
+  mixins: [logoutMixin],
   props: {
     tipo: {
       type: String,
@@ -102,7 +110,9 @@ export default {
       show1: false
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters(['usuarioLogado', 'usuarioEstaLogado'])
+  },
   methods: {
     efetuarLogin () {
       if (this.usuario.matricula === '' || this.usuario.password === '') {

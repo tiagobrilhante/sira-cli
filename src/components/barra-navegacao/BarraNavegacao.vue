@@ -16,7 +16,7 @@
         alt="Logo Uninorte"
         width="150px">
       <!--home-->
-      <template v-if="usuarioEstaLogado && usuarioResetado">
+      <template v-if="usuarioEstaLogado && usuarioResetado && usuarioLogado.tipo !== 'Aluno'">
         <div class="text-center">
           <v-menu
             rounded="xl"
@@ -39,7 +39,7 @@
       </template>
 
       <!--configurações básicas-->
-      <template v-if="usuarioEstaLogado && usuarioResetado">
+      <template v-if="usuarioEstaLogado && usuarioResetado && usuarioLogado.tipo !== 'Aluno'">
         <div class="text-center">
           <v-menu
             bottom
@@ -127,7 +127,7 @@
       </template>
 
       <!-- BARRA DE NAVEGACAO LOGADO-->
-      <OpcoesUsuario v-if="usuarioEstaLogado"/>
+      <OpcoesUsuario v-if="usuarioEstaLogado && usuarioLogado.tipo !== 'Aluno'"/>
 
     </v-app-bar>
 

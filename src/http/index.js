@@ -19,7 +19,7 @@ http.interceptors.response.use(
   error => {
     const {status} = error.response
     if (status === 401 || status === 403) {
-      if (router.currentRoute.name !== 'login') {
+      if (router.currentRoute.name !== 'home') {
         store.commit('DESLOGAR_USUARIO')
         router.push({name: 'index'})
       }

@@ -46,6 +46,12 @@ const actions = {
           reject(err)
         })
     })
+  },
+  atualizarUsuarioLogado ({ commit, state }, usuarioLogado) {
+    commit('DEFINIR_USUARIO_LOGADO', {
+      token: state.token,
+      usuarioLogado: usuarioLogado
+    })
   }
 }
 

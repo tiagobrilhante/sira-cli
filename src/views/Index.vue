@@ -51,6 +51,8 @@
               :src="require('@/assets/img/logo-ser-branca.png')"
               alt="Logo Uninorte"
               width="200px"> <br><br>
+
+            <!-- abrir solicitação-->
             <v-btn
               block
               rounded
@@ -60,6 +62,8 @@
               solicitação
             </v-btn>
             <br>
+
+            <!-- acompanhar solicitação-->
             <v-btn
               rounded
               block
@@ -111,12 +115,15 @@
 
           <AberturaChamado
             v-if="objetoDialog.action_type === 'Solicitação'"
-            ref="aberturaChamado"/>
+            ref="aberturaChamado"
+            @close-and-reset="closeAndReset"/>
           <Login
             v-if="objetoDialog.action_type === 'Verificação'"
             :tipo="tipo"/>
 
         </v-card-text>
+
+        <!-- actions (fechar)-->
         <v-card-actions class="pb-5">
           <v-spacer/>
           <v-btn
@@ -129,6 +136,7 @@
               class="mr-3">mdi-close-circle-outline</v-icon> Fechar
           </v-btn>
         </v-card-actions>
+
       </v-card>
     </v-dialog>
 
