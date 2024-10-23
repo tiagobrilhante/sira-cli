@@ -344,7 +344,7 @@ export default {
     },
 
     opendialogAjustaCursos () {
-      console.log(ajusta)
+      console.log('ajusta')
     }
   }
 }
