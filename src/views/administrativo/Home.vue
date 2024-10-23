@@ -311,7 +311,7 @@
                 no-gutters
                 class="text-center">
                 <v-col class="my-border myrealce"><h3 class="pt-1 pb-1">Aprovado por:</h3></v-col>
-                <v-col class="my-border"><h4 class="pt-1 pb-1">SUPERINTENDENTE ACADÊMICA</h4></v-col>
+                <v-col class="my-border"><h5 class="pt-1 pb-1">SUPERINTENDENTE ACADÊMICA</h5></v-col>
               </v-row>
             </v-col>
 
@@ -639,7 +639,6 @@
           Solução de Solicitação - {{ selectedSolicitacao.status }}
         </v-card-title>
         <v-card-text ref="contentToConvert">
-
           <!-- imagem, texto form atend, cod e aprov-->
           <v-row no-gutters>
 
@@ -672,7 +671,7 @@
                 no-gutters
                 class="text-center">
                 <v-col class="my-border myrealce"><h3 class="pt-1 pb-1">Aprovado por:</h3></v-col>
-                <v-col class="my-border"><h4 class="pt-1 pb-1">SUPERINTENDENTE ACADÊMICA</h4></v-col>
+                <v-col class="my-border"><h5 class="pt-1 pb-1">SUPERINTENDENTE ACADÊMICA</h5></v-col>
               </v-row>
             </v-col>
 
@@ -898,11 +897,13 @@
               <span class="pl-2">{{ selectedSolicitacao.user_atendimento_resolucao.intervencao_coordenacao }}</span>
 
               <br><br>
-              Assinado por: {{ selectedSolicitacao.user_atendimento_resolucao.responsavel.nome }}  <img
-                :src="require('@/assets/img/assinaturadigitalAluno.png')"
-                alt="Assinado Digitalmente"
-                class="pl-10"
-                width="250px">
+              <span class="pl-2">
+                Assinado por: {{ selectedSolicitacao.user_atendimento_resolucao.responsavel.nome }}  <img
+                  :src="require('@/assets/img/assinaturadigitalAluno.png')"
+                  alt="Assinado Digitalmente"
+                  class="pl-10"
+                  width="250px">
+              </span>
             </v-col>
             <v-col
               class="my-border text-left">
@@ -924,7 +925,7 @@
             <v-col
               class="my-border text-center">
 
-              <h3 v-if="selectedSolicitacao.data_solucao !== ''">{{ formatDate(selectedSolicitacao.data_solucao) }}</h3>
+              <h3 v-if="selectedSolicitacao.data_solucao !== '' && selectedSolicitacao.status !=='Aberto'">{{ formatDate(selectedSolicitacao.data_solucao) }}</h3>
 
             </v-col>
             <v-col
@@ -938,7 +939,7 @@
             <v-col
               class="my-border text-center">
 
-              <h3 v-if="selectedSolicitacao.data_solucao !== ''">{{ formatDate(selectedSolicitacao.data_solucao) }}</h3>
+              <h3 v-if="selectedSolicitacao.data_solucao !== '' && selectedSolicitacao.status !=='Aberto'">{{ formatDate(selectedSolicitacao.data_solucao) }}</h3>
 
             </v-col>
           </v-row>
@@ -972,6 +973,7 @@ import config from '../../http/config'
 import JsPDF from 'jspdf'
 import BarraNavegacao from '../../components/barra-navegacao/BarraNavegacao.vue'
 import html2canvas from 'html2canvas'
+import {nextTick} from 'vue'
 
 export default {
   name: 'Home',
@@ -1020,6 +1022,7 @@ export default {
       descricao: '',
       data_solicitacao: '',
       data_solucao: '',
+      periodo_letivo: '',
       aluno: {
         nome: '',
         matricula: '',
@@ -1073,9 +1076,6 @@ export default {
 
     async getSolicitacoes () {
       // tenho que passar unidade, curso e estado
-      console.log('antes de enviar')
-      console.log(this.filtrosPesquisa)
-      console.log('antes de enviar')
       try {
         this.$http.post('atendimento/pesquisa', this.filtrosPesquisa)
           .then(response => {
@@ -1133,7 +1133,6 @@ export default {
     },
 
     async fazPesquisaEstado (estado) {
-      console.log(estado)
       this.selectedEstado = estado
       this.filtrosPesquisa = {
         'unidade': this.selectedUnidade,
@@ -1227,11 +1226,25 @@ export default {
 
         try {
           this.$http.post('atendimento/resolve', objetoParaEnvio)
-            .then(response => {
-              console.log(response.data)
+            .then(async response => {
               this.dialogResolverChamado = false
               this.resetCampos()
-              this.getSolicitacoes()
+              await nextTick()
+              this.selectedSolicitacao = response.data
+              this.openDialogVerDetalhes(this.selectedSolicitacao)
+              await this.getSolicitacoes()
+              await nextTick()
+              this.$toastr.Add({
+                title: 'Sucesso!',
+                msg: 'Solicitação resolvida com sucesso!',
+                type: 'success',
+                timeout: 8000
+              })
+
+              setTimeout(() => {
+                // Code to be executed after 500 ms
+                this.downloadPdf()
+              }, 500)
             })
             .catch(erro => console.log(erro))
         } catch (e) {
@@ -1294,7 +1307,8 @@ export default {
 
     async downloadPdf () {
       const element = this.$refs.contentToConvert
-      const canvas = await html2canvas(element)
+      const scale = 3
+      const canvas = await html2canvas(element, { scale })
       const imgData = canvas.toDataURL('image/jpeg', 1.0) // Usando JPEG com qualidade máxima
 
       const pdf = new JsPDF({
@@ -1314,8 +1328,15 @@ export default {
       const x = 0
       const y = 10
 
+      const matricula = this.selectedSolicitacao.aluno.matricula
+      const dataSolucao = this.selectedSolicitacao.data_solucao
+      const id = this.selectedSolicitacao.id
+      const pl = this.selectedSolicitacao.periodo_letivo.replace('.', '_')
+
+      const namefile = `solucao_${id}_${matricula}_${pl}_${dataSolucao}.pdf`
+
       pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight)
-      pdf.save('download.pdf')
+      pdf.save(namefile)
     }
 
   }

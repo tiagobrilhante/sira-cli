@@ -82,7 +82,7 @@
     <!--Dialog Geral -->
     <v-dialog
       v-model="dialogGeral"
-      max-width="90%"
+      :max-width="tamanhoDialog()"
       persistent
       scrollable>
       <v-card
@@ -119,7 +119,8 @@
             @close-and-reset="closeAndReset"/>
           <Login
             v-if="objetoDialog.action_type === 'Verificação'"
-            :tipo="tipo"/>
+            :tipo="tipo"
+            @countdown-finished="onCountdownFinished"/>
 
         </v-card-text>
 
@@ -149,10 +150,11 @@ import BarraNavegacao from '../components/barra-navegacao/BarraNavegacao'
 import AberturaChamado from '../components/chamados/AberturaChamado'
 import Login from '../components/login/Login.vue'
 import Cadastro from '../components/cadastro/Cadastro.vue'
+import FormularioAtendimento from '../components/chamados/FormularioAtendimento.vue'
 
 export default {
 
-  components: {Cadastro, BarraNavegacao, AberturaChamado, Login},
+  components: {FormularioAtendimento, Cadastro, BarraNavegacao, AberturaChamado, Login},
   data () {
     return {
       configSis: config,
@@ -200,6 +202,19 @@ export default {
         txt_button: '',
         action_type: ''
       }
+    },
+
+    tamanhoDialog () {
+      console.log(this.objetoDialog.action_type)
+      if (this.objetoDialog.action_type === 'Solicitação') {
+        return '90%'
+      } else {
+        return '60%'
+      }
+    },
+
+    onCountdownFinished () {
+      this.closeAndReset()
     }
   }
 }

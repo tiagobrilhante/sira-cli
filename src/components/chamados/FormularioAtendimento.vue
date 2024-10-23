@@ -1,182 +1,201 @@
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col>
+
+  <v-row dense>
+    <v-col>
+
+      <h3>Dados do Aluno</h3>
+
+      <!-- dados básicos do aluno (nome, matricula, telefone e email-->
+      <v-alert
+        rounded="xxl"
+        dense
+        class="white--text"
+        elevation="5"
+        color="#015088">
+
+        <!-- nome e matricula-->
+        <v-row dense>
+          <!-- nome-->
+          <v-col><b>Nome: </b>{{ usuarioLogado.nome }}</v-col>
+          <!-- matricula-->
+          <v-col><b>Matricula: </b>{{ usuarioLogado.matricula }}</v-col>
+        </v-row>
+
+        <!-- telefone e email-->
+        <v-row dense>
+          <!-- telefone-->
+          <v-col><b>Telefone </b>{{ usuarioLogado.telefone }}</v-col>
+          <!-- email-->
+          <v-col><b>Email </b>{{ usuarioLogado.email }}</v-col>
+        </v-row>
+      </v-alert>
+
+      <!-- convite para ajustar os cursos caso não exista semestre vigente vinculado ao aluno-->
+      <v-alert
+        v-if="testaSemestreVigente() === 0"
+        dense
+        class="white--text"
+        elevation="5"
+        color="rgb(250, 115, 59)">
+        Você não possui cursos vinculados a esse período letivo ({{ emVigencia() }}).
+        <br>
+
+        Seu último vinculo é do período: {{ findClosestSemestreLetivo() }}<br>
+        Você deve atualizar suas informações de cursos antes de prosseguir.
+
+      </v-alert>
+
+      <UpdateCurso
+        v-if="testaSemestreVigente() === 0"
+        @atualiza-vinculo = "retonaTurmaViaCodigo"/>
+
+      <!-- seletor do curso para atendiimento-->
+      <v-alert
+        v-if="testaSemestreVigente() > 0 && !retornoOk"
+        rounded="xxl"
+        dense
+        class="white--text"
+        elevation="5"
+        color="rgb(250, 115, 59)">
+
+        <!-- descritor e ajuste seus cursos-->
+        <v-row class="mb-0">
+          <v-col cols="7">
+            Selecione para qual curso deseja solicitar o atendimento.
+          </v-col>
+
+          <!-- ajuste seus cursos-->
+          <v-col
+            class="text-right"
+            cols="5">
+            <v-btn
+              class="white--text"
+              x-small
+              rounded
+              color="#015088"
+              @click="opendialogAjustaCursos">
+              <v-icon
+                class="pr-2"
+                x-small
+                color="white">
+                mdi-cog
+              </v-icon>
+              Ajuste seus cursos
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <!-- espaço para rádio de selecão-->
         <v-alert
-          elevation="12"
-          rounded="xxl">
-
-          <h3>Dados do Aluno</h3>
-
-          <!-- dados básicos do aluno (nome, matricula, telefone e email-->
-          <v-alert
-            dense
-            class="white--text"
-            elevation="5"
-            color="#015088">
-
-            <!-- nome e matricula-->
-            <v-row dense>
-              <!-- nome-->
-              <v-col><b>Nome: </b>{{ usuarioLogado.nome }}</v-col>
-              <!-- matricula-->
-              <v-col><b>Matricula: </b>{{ usuarioLogado.matricula }}</v-col>
-            </v-row>
-
-            <!-- telefone e email-->
-            <v-row dense>
-              <!-- telefone-->
-              <v-col><b>Telefone </b>{{ usuarioLogado.telefone }}</v-col>
-              <!-- email-->
-              <v-col><b>Email </b>{{ usuarioLogado.email }}</v-col>
-            </v-row>
-          </v-alert>
-
-          <!-- convite para ajustar os cursos caso não exista semestre vigente vinculado ao aluno-->
-          <v-alert
-            v-if="testaSemestreVigente() === 0"
-            dense
-            class="white--text"
-            elevation="5"
-            color="rgb(250, 115, 59)">
-            Você não possui cursos vinculados a esse período letivo ({{ emVigencia() }}).
-            <br>
-
-            Seu último vinculo é do período: {{ findClosestSemestreLetivo() }}<br>
-            Você deve atualizar suas informações de cursos antes de prosseguir.
-
-          </v-alert>
-
-          <UpdateCurso
-            v-if="testaSemestreVigente() === 0"
-            @atualiza-vinculo = "retonaTurmaViaCodigo"/>
-
-          <!-- seletor do curso para atendiimento-->
-          <v-alert
-            v-if="testaSemestreVigente() > 0 && !retornoOk"
-            dense
-            class="white--text"
-            elevation="5"
-            color="rgb(250, 115, 59)">
-
-            <!-- descritor-->
-            <v-row>
-              <v-col>
-                Selecione para qual curso deseja solicitar o atendimento.
-              </v-col>
-            </v-row>
-
-            <!-- espaço para rádio de selecão-->
-            <v-alert
-              elevation="5"
-              dense>
-              <v-radio-group
-                v-model="turmaCursoGroup"
-                hide-details
-                class="pt-0 mt-0"
-              >
-                <v-radio
-                  v-for="(objeto, index) in arrayTurmaCurso"
-                  :key="index"
-                  :label="`${objeto.curso.nome} - ${objeto.geral}`"
-                  :value="objeto"
-                />
-              </v-radio-group>
-
-            </v-alert>
-
-            <!-- informações sobre o curso selecionado-->
-            <v-alert
-              v-if="turmaCursoGroup"
-              elevation="5">
-              <v-row dense>
-                <v-col>
-                  <b>Curso: </b>{{ turmaCursoGroup.curso.nome }} - ({{ turmaCursoGroup.curso.codigo }})<br>
-                </v-col>
-                <v-col><b>Turno: </b> {{ turmaCursoGroup.turno.horario }} - {{ turmaCursoGroup.turno.identificador_horario }}</v-col>
-              </v-row>
-
-              <v-row dense>
-                <v-col><b>Periodo: </b>{{ turmaCursoGroup.identificador_periodo }}</v-col>
-                <v-col><b>Turma</b> {{ turmaCursoGroup.codigo_turma }}</v-col>
-              </v-row>
-
-              <v-row dense>
-                <v-col><b>Codigo da turma: </b>{{ turmaCursoGroup.geral }}</v-col>
-              </v-row>
-            </v-alert>
-
-          </v-alert>
-
-          <!-- campos para preenchimento do pedido a ser atendido-->
-          <v-alert
-            v-if="turmaCursoGroup && !retornoOk"
-            rounded="xxl"
-            elevation="5">
-
-            <h2>Descrição do assunto</h2>
-            <h4>(escreva o que você precisa que seja resolvido, de forma clara e sucinta)</h4>
-
-            <v-textarea
-              v-model="descricao"
-              label="Descrição"
-              outlined
-              dense
-              rows="5"
+          elevation="5"
+          rounded="xxl"
+          dense>
+          <v-radio-group
+            v-model="turmaCursoGroup"
+            hide-details
+            class="pt-0 mt-0"
+          >
+            <v-radio
+              v-for="(objeto, index) in arrayTurmaCurso"
+              :key="index"
+              :label="`${objeto.curso.nome} - ${objeto.geral}`"
+              :value="objeto"
             />
-
-            <v-row>
-              <v-col>
-                <b>Data: </b> {{ getCurrentDateTime() }}
-              </v-col>
-              <v-col>
-                <b>Assinatura do aluno</b> (mediante senha)
-                <v-text-field
-                  v-model="password"
-                  dense
-                  label="Senha"
-                  type="password"
-                  rounded
-                  solo
-                />
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col>
-                <v-btn
-                  rounded
-                  class="white--text"
-                  block
-                  color="rgb(250, 115, 59)">Cancelar</v-btn>
-              </v-col>
-              <v-col>
-                <v-btn
-                  rounded
-                  color="#015088"
-                  block
-                  class="white--text"
-                  @click="sendSolicitacaoToServer">Enviar
-                </v-btn>
-              </v-col>
-            </v-row>
-            <br>
-
-          </v-alert>
-
-          <v-alert
-            v-if="retornoOk"
-            class="text-center"
-            elevation="5">
-            <h3>
-              Sua solicitação foi enviada com sucesso.<br>
-              Essa janela fechará em: {{ contaSair }} </h3>
-          </v-alert>
+          </v-radio-group>
 
         </v-alert>
-      </v-col>
-    </v-row>
-  </v-container>
+
+        <!-- informações sobre o curso selecionado-->
+        <v-alert
+          v-if="turmaCursoGroup"
+          rounded="xxl"
+          elevation="5">
+          <v-row dense>
+            <v-col>
+              <b>Curso: </b>{{ turmaCursoGroup.curso.nome }} - ({{ turmaCursoGroup.curso.codigo }})<br>
+            </v-col>
+            <v-col><b>Turno: </b> {{ turmaCursoGroup.turno.horario }} - {{ turmaCursoGroup.turno.identificador_horario }}</v-col>
+          </v-row>
+
+          <v-row dense>
+            <v-col><b>Periodo: </b>{{ turmaCursoGroup.identificador_periodo }}</v-col>
+            <v-col><b>Turma</b> {{ turmaCursoGroup.codigo_turma }}</v-col>
+          </v-row>
+
+          <v-row dense>
+            <v-col><b>Codigo da turma: </b>{{ turmaCursoGroup.geral }}</v-col>
+          </v-row>
+        </v-alert>
+
+      </v-alert>
+
+      <!-- campos para preenchimento do pedido a ser atendido-->
+      <v-alert
+        v-if="turmaCursoGroup && !retornoOk"
+        rounded="xxl"
+        elevation="5">
+
+        <h2>Descrição do assunto</h2>
+        <h4>(escreva o que você precisa que seja resolvido, de forma clara e sucinta)</h4>
+
+        <v-textarea
+          v-model="descricao"
+          label="Descrição"
+          outlined
+          dense
+          rows="5"
+        />
+
+        <v-row>
+          <v-col>
+            <b>Data: </b> {{ getCurrentDateTime() }}
+          </v-col>
+          <v-col>
+            <b>Assinatura do aluno</b> (mediante senha)
+            <v-text-field
+              v-model="password"
+              dense
+              label="Senha"
+              type="password"
+              rounded
+              solo
+            />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <v-btn
+              rounded
+              class="white--text"
+              block
+              color="rgb(250, 115, 59)">Cancelar</v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+              rounded
+              color="#015088"
+              block
+              class="white--text"
+              @click="sendSolicitacaoToServer">Enviar
+            </v-btn>
+          </v-col>
+        </v-row>
+        <br>
+
+      </v-alert>
+
+      <v-alert
+        v-if="retornoOk"
+        class="text-center"
+        elevation="5">
+        <h3>
+          Sua solicitação foi enviada com sucesso.<br>
+          Essa janela fechará em: {{ contaSair }} </h3>
+      </v-alert>
+
+    </v-col>
+  </v-row>
 
 </template>
 
@@ -322,6 +341,10 @@ export default {
           this.$emit('countdown-finished')
         }
       }, 1000)
+    },
+
+    opendialogAjustaCursos () {
+      console.log(ajusta)
     }
   }
 }

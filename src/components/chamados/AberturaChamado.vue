@@ -69,6 +69,7 @@
       <v-col>
         <span class="pl-3">Digite sua Senha</span>
         <v-text-field
+          ref="passwordField"
           v-model="password"
           dense
           label="Senha"
@@ -91,6 +92,7 @@ import {mapGetters} from 'vuex'
 import config from '../../http/config'
 import Cadastro from '../cadastro/Cadastro.vue'
 import FormularioAtendimento from './FormularioAtendimento.vue'
+import {nextTick} from 'vue'
 
 export default {
   components: {FormularioAtendimento, Cadastro},
@@ -143,27 +145,26 @@ export default {
       }
     },
 
-    pesquisaMatricula () {
+    async pesquisaMatricula () {
       if (this.validaMatricula(this.matricula)) {
         let objetoparaEnvio = {}
         objetoparaEnvio['matricula'] = this.matricula
 
         try {
-          this.$http.post('pesquisamatricula', objetoparaEnvio)
-            .then(response => {
-              this.mostraPesquisaMatricula = false
+          const response = await this.$http.post('pesquisamatricula', objetoparaEnvio)
+          this.mostraPesquisaMatricula = false
 
-              if (response.data === 'Matrícula não encontrada.') {
-                this.returnErrorMatricula = true
-                this.matriculaPraCadastro = this.matricula
-                this.matricula = ''
-                this.showInputSenha = false
-              } else {
-                this.returnErrorMatricula = false
-                this.showInputSenha = true
-              }
-            })
-            .catch(erro => console.log(erro))
+          if (response.data === 'Matrícula não encontrada.') {
+            this.returnErrorMatricula = true
+            this.matriculaPraCadastro = this.matricula
+            this.matricula = ''
+            this.showInputSenha = false
+          } else {
+            this.returnErrorMatricula = false
+            this.showInputSenha = true
+            await nextTick()
+            this.$refs.passwordField.focus()
+          }
         } catch (e) {
           console.log(e)
         }
