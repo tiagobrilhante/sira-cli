@@ -97,6 +97,58 @@
         </div>
       </template>
 
+      <!--Relatórios e estatísticas-->
+      <template
+        v-if="usuarioEstaLogado && usuarioResetado && usuarioLogado.tipo !== 'Aluno'">
+        <div class="text-center">
+          <v-menu
+            bottom
+            offset-y
+            open-on-hover
+            rounded="xl"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                color="rgb(250, 115, 59)"
+                dark
+                class="ml-4"
+                rounded
+                v-on="on"
+              >
+                <v-icon
+                  class="mr-3"
+                  small>mdi-file-chart</v-icon>
+                Relatórios e estatísticas
+              </v-btn>
+            </template>
+            <v-list>
+
+              <!-- Relatórios-->
+              <v-list-item to="/home">
+                <v-list-item-title>
+                  <v-icon
+                    class="mr-3"
+                    small>mdi-list-box</v-icon>
+                  Relatórios
+                </v-list-item-title>
+              </v-list-item>
+
+              <!-- gerenciamento de Semestres-->
+              <v-list-item to="/home">
+                <v-list-item-title>
+                  <v-icon
+                    class="mr-3"
+                    small>mdi-chart-line</v-icon>
+                  Estatísticas
+                </v-list-item-title>
+              </v-list-item>
+
+            </v-list>
+          </v-menu>
+        </div>
+      </template>
+
       <v-spacer/>
 
       <!--btn login para administradores-->
@@ -138,7 +190,7 @@
       persistent
       scrollable>
       <v-card
-        color="#748bab"
+        color="rgb(250, 115, 59)"
         rounded="xxl">
         <!--titulo e botão fechar-->
         <v-card-title class="justify-center text-center">

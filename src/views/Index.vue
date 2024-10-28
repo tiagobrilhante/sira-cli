@@ -205,7 +205,6 @@ export default {
     },
 
     tamanhoDialog () {
-      console.log(this.objetoDialog.action_type)
       if (this.objetoDialog.action_type === 'Solicitação') {
         return '90%'
       } else {

@@ -49,7 +49,7 @@
         v-if="testaSemestreVigente() === 0"
         @atualiza-vinculo = "retonaTurmaViaCodigo"/>
 
-      <!-- seletor do curso para atendiimento-->
+      <!-- seletor do curso para atendiimento / ajuste de cursos-->
       <v-alert
         v-if="testaSemestreVigente() > 0 && !retornoOk"
         rounded="xxl"
@@ -73,7 +73,7 @@
               x-small
               rounded
               color="#015088"
-              @click="opendialogAjustaCursos">
+              @click="openDialogAjustaCursos">
               <v-icon
                 class="pr-2"
                 x-small
@@ -185,6 +185,7 @@
 
       </v-alert>
 
+      <!-- countdown para logoff-->
       <v-alert
         v-if="retornoOk"
         class="text-center"
@@ -194,7 +195,165 @@
           Essa janela fechará em: {{ contaSair }} </h3>
       </v-alert>
 
+      <!--Dialog para configurar cursos de um aluno-->
+      <v-dialog
+        v-model="dialogAjustaCursos"
+        persistent
+        max-width="70%">
+        <v-card>
+          <v-card-title
+            class="justify-center"
+            primary-title>
+            Ajuste de Cursos - Matrícula: {{ usuarioLogado.matricula }}
+          </v-card-title>
+          <v-card-text>
+
+            <v-alert
+              dense
+
+              elevation="15"
+              rounded="xxl">
+
+              <v-row>
+                <v-col cols="3"/>
+                <v-col
+                  cols="6"
+                  class="text-center">Vigência: {{ emVigencia() }}</v-col>
+                <v-col
+                  cols="3"
+                  class="text-right">
+                  <v-btn
+                    class="white--text"
+                    color="#015088"
+                    rounded
+                    small
+                    @click="openDialogAddNovoCurso"> <v-icon
+                      class="pr-3"
+                      small
+                      color="white">mdi-plus-circle</v-icon> Cadastrar novo curso</v-btn>
+                </v-col>
+              </v-row>
+
+            </v-alert>
+
+            <v-alert
+              v-for="vinculo in arrayTurmaCurso"
+              :key="vinculo.id"
+              rounded="xxl"
+              class="white--text"
+              color="rgb(250, 115, 59)"
+              dense>
+
+              <v-row>
+                <v-col cols="11">
+                  <!-- unidade e curso-->
+                  <v-row dense>
+                    <!--unidade-->
+                    <v-col>
+                      <b>Unidade: </b>{{ vinculo.unidade.nome }}
+                    </v-col>
+                    <!--curso-->
+                    <v-col>
+                      <b>Curso: </b>{{ vinculo.curso.nome }}
+                    </v-col>
+                  </v-row>
+
+                  <!--periodo e tirno-->
+                  <v-row dense>
+                    <!--periodo-->
+                    <v-col>
+                      <b>Período: </b>{{ vinculo.identificador_periodo }}
+                    </v-col>
+                    <!--turno-->
+                    <v-col>
+                      <b>Turno: </b>{{ vinculo.turno.horario }}
+                    </v-col>
+                  </v-row>
+
+                  <!--turma e código-->
+                  <v-row dense>
+                    <!--turma-->
+                    <v-col>
+                      <b>Turma: </b>{{ vinculo.codigo_turma }}
+                    </v-col>
+                    <!--código-->
+                    <v-col>
+                      <b>Código: </b>{{ vinculo.geral }}
+                    </v-col>
+                  </v-row>
+
+                </v-col>
+                <v-col
+                  cols="1"
+                  class="text-right">
+                  <v-btn
+                    color="#015088"
+                    rounded
+                    small> <v-icon
+                      small
+                      color="white">mdi-pen</v-icon></v-btn>
+                  <br>
+                  <br>
+                  <v-btn
+                    color="#015088"
+                    rounded
+                    small> <v-icon
+                      small
+                      color="white">mdi-delete</v-icon></v-btn>
+                </v-col>
+              </v-row>
+
+            </v-alert>
+
+          </v-card-text>
+          <v-card-actions class="pb-5">
+            <v-spacer/>
+            <v-btn
+              rounded
+              class="white--text"
+              color="#015088"
+              @click="dialogAjustaCursos = false">Fechar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!--Dialog para add cursos em um aluno-->
+      <v-dialog
+        v-model="dialogAddCursos"
+        persistent
+        max-width="70%">
+        <v-card>
+          <v-card-title
+            class="justify-center"
+            primary-title>
+            Adicionar Cursos - Matrícula: {{ usuarioLogado.matricula }}
+          </v-card-title>
+          <v-card-text>
+            <AjusteCurso @atualiza-vinculo = "retonaTurmaViaCodigo"/>
+          </v-card-text>
+          <v-card-actions class="pb-5">
+
+            <v-row>
+              <v-col/>
+              <v-col class="pr-5 ml-3">
+                <v-btn
+                  rounded
+                  block
+                  class="white--text"
+                  color="rgb(250, 115, 59)"
+                  @click="dialogAddCursos = false">Cancelar
+                </v-btn>
+              </v-col>
+            </v-row>
+
+          </v-card-actions>
+
+        </v-card>
+      </v-dialog>
+
     </v-col>
+
   </v-row>
 
 </template>
@@ -203,9 +362,10 @@
 import {mapGetters} from 'vuex'
 import config from '../../http/config'
 import UpdateCurso from '../update/UpdateCurso.vue'
+import AjusteCurso from '../update/AjusteCurso.vue'
 
 export default {
-  components: {UpdateCurso},
+  components: {UpdateCurso, AjusteCurso},
   mixins: [logoutMixin],
   data: () => ({
     configSis: config,
@@ -214,7 +374,10 @@ export default {
     descricao: '',
     password: '',
     retornoOk: false,
-    contaSair: 10
+    contaSair: 10,
+    dialogAjustaCursos: false,
+    meusCursosVigentes: [],
+    dialogAddCursos: false
   }),
   computed: {
     ...mapGetters(['usuarioLogado', 'usuarioEstaLogado'])
@@ -244,6 +407,9 @@ export default {
             console.log(e)
           }
         }
+      }
+      if (this.dialogAddCursos) {
+        this.dialogAddCursos = false
       }
     },
 
@@ -343,8 +509,42 @@ export default {
       }, 1000)
     },
 
-    opendialogAjustaCursos () {
-      console.log('ajusta')
+    openDialogAjustaCursos () {
+      this.dialogAjustaCursos = true
+    },
+
+    retornaObjetoCursoPeriodoTurnoTurma (codigo) {
+      if (codigo) {
+        // Verifica se o código tem o comprimento esperado
+        if (codigo.length < 12) {
+          throw new Error('Código inválido')
+        }
+
+        // Extrai as partes do código conforme as regras
+        const identificadorUnidade = codigo.substring(0, 3)
+        const codigoCurso = codigo.substring(3, 6)
+        const numeroConstante = codigo.substring(6, 8)
+        const identificadorPeriodo = codigo.substring(8, 10)
+        const codigoTurno = codigo.substring(10, codigo.length - 1) // Pega todos os caracteres até o penúltimo
+        const codigoTurma = codigo.substring(codigo.length - 1) // Pega o último caractere
+
+        // Monta o array com as informações extraídas
+        const informacoes = {
+          unidade: identificadorUnidade,
+          curso: codigoCurso,
+          numero_constante: numeroConstante,
+          identificador_periodo: identificadorPeriodo,
+          turno: codigoTurno,
+          codigo_turma: codigoTurma,
+          geral: codigo
+        }
+
+        return informacoes
+      }
+    },
+
+    openDialogAddNovoCurso () {
+      this.dialogAddCursos = true
     }
   }
 }
