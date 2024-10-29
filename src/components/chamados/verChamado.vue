@@ -10,11 +10,13 @@
       <v-col
         class="my-border"
         cols="2">
-        <img
+        <v-img
           :src="require('@/assets/img/logoSer.png')"
-          class="pa-5"
+          max-height="125"
+          class="ma-5"
           alt="Logo Uninorte"
-          width="150px">
+          contain
+        />
       </v-col>
       <!-- texto form atendimento-->
       <v-col
@@ -216,10 +218,13 @@
             <!-- data-->
             <v-col>DATA: {{ formatDate(selectedSolicitacao.data_solicitacao) }}</v-col>
             <v-col class="text-center">
-              <img
+              <v-img
                 :src="require('@/assets/img/assinaturadigitalAluno.png')"
+                :max-height="sizeDigitalSignature"
+                class="pl-10"
                 alt="Assinado Digitalmente"
-                width="250px">
+                contain
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -261,13 +266,17 @@
         <span class="pl-2">{{ selectedSolicitacao.user_atendimento_resolucao.intervencao_coordenacao }}</span>
 
         <br><br>
+
         <span class="pl-2">
-          Assinado por: {{ selectedSolicitacao.user_atendimento_resolucao.responsavel.nome }}  <img
-            :src="require('@/assets/img/assinaturadigitalAluno.png')"
-            alt="Assinado Digitalmente"
-            class="pl-10"
-            width="250px">
+          Assinado por: {{ selectedSolicitacao.user_atendimento_resolucao.responsavel.nome }}
         </span>
+        <v-img
+          :src="require('@/assets/img/assinaturadigitalAluno.png')"
+          :max-height="sizeDigitalSignature"
+          class="pl-10"
+          alt="Assinado Digitalmente"
+          contain
+        />
       </v-col>
       <v-col
         class="my-border text-left">
@@ -325,7 +334,8 @@ export default {
     }
   },
   data: () => ({
-    configSis: config
+    configSis: config,
+    sizeDigitalSignature: 80
   }),
   computed: {
     ...mapGetters(['usuarioLogado', 'usuarioEstaLogado'])

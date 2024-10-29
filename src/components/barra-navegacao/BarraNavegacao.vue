@@ -38,7 +38,7 @@
         </div>
       </template>
 
-      <!--configurações básicas-->
+      <!--Administração-->
       <template v-if="usuarioEstaLogado && usuarioResetado && usuarioLogado.tipo !== 'Aluno'">
         <div class="text-center">
           <v-menu
@@ -58,7 +58,7 @@
                 <v-icon
                   class="mr-3"
                   small>mdi-cogs</v-icon>
-                Configurações Básicas
+                Administração
               </v-btn>
             </template>
             <v-list>
@@ -125,7 +125,7 @@
             <v-list>
 
               <!-- Relatórios-->
-              <v-list-item to="/home">
+              <v-list-item to="/relatorios">
                 <v-list-item-title>
                   <v-icon
                     class="mr-3"

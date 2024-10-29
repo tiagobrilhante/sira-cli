@@ -31,6 +31,7 @@
                 cols="8">
                 <h1 class="white--text pt-4"><i>{{ configSis.nomeSis }}</i></h1>
                 <h3 class="white--text">{{ configSis.labelSis }}</h3>
+
               </v-col>
             </v-row>
 

@@ -10,6 +10,7 @@ import BkupBanco from '../views/administrativo/BkupBanco.vue'
 import AdmUser from '../components/areaAdministrativa/AdmUser.vue'
 import AdmUnidades from '../components/areaAdministrativa/AdmUnidades.vue'
 import AdmSemestreLetivo from '../components/areaAdministrativa/AdmSemestreLetivo.vue'
+import Relatorios from '../views/administrativo/Relatorios.vue'
 
 Vue.use(VueRouter)
 const routes = [
@@ -49,6 +50,14 @@ const routes = [
     path: '/admsemestreletivo',
     name: 'admsemestreletivo',
     component: AdmSemestreLetivo,
+    meta: {
+      logado: true
+    }
+  },
+  {
+    path: '/relatorios',
+    name: 'relatorios',
+    component: Relatorios,
     meta: {
       logado: true
     }
