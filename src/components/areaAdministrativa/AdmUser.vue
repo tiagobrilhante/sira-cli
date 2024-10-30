@@ -467,7 +467,7 @@
         </v-card>
       </v-dialog>
 
-      <!--Dialog para resetar usuário - TEM QUE ARRUMAR-->
+      <!--Dialog para resetar usuário -->
       <v-dialog
         v-model="dialogReset"
         max-width="60%">

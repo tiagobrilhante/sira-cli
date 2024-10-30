@@ -27,18 +27,17 @@
                 class="mr-4"
                 color="white"
                 size="36">
-                mdi-list-box
+                mdi-account-group
               </v-icon>
-              Gerenciamento de Relatórios
+              Resetar de Alunos
             </h2>
 
           </v-col>
           <v-col />
         </v-row>
-
       </v-alert>
 
-      <Relatorio/>
+      <ResetAluno/>
 
     </v-container>
 
@@ -49,12 +48,11 @@
 import {mapGetters} from 'vuex'
 import config from '../../http/config'
 import BarraNavegacao from '../../components/barra-navegacao/BarraNavegacao.vue'
-import VerChamado from '../../components/chamados/verChamado.vue'
-import Relatorio from '../../components/relatorio/Relatorio.vue'
+import ResetAluno from '../../components/areaAdministrativa/ResetAluno.vue'
 
 export default {
-  name: 'Relatorios',
-  components: {Relatorio, VerChamado, BarraNavegacao},
+  name: 'ResetAlunos',
+  components: {BarraNavegacao, ResetAluno},
   mixins: [logoutMixin],
   data: () => ({
     configSis: config

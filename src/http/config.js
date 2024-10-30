@@ -22,8 +22,6 @@ const nomeSis = 'SIRA'
 const versaoSis = versoes[0].id
 const labelSis = 'Sistema Interno de Registro de Atendimentos'
 const criador = 'Tiago da Silva Brilhante'
-// info geral
-const revisarForm = 'Revise os campos do formulário.'
 
 export default {
   urlDownload,
@@ -32,8 +30,6 @@ export default {
   versaoSis,
   labelSis,
   criador,
-  // info geral
-  revisarForm,
   // versoes
   versoes
 }

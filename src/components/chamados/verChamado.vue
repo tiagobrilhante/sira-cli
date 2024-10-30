@@ -5,17 +5,19 @@
 
     <!-- imagem, texto form atend, cod e aprov-->
     <v-row no-gutters>
-
       <!-- imagem-->
       <v-col
         class="my-border"
         cols="2">
         <v-img
-          :src="require('@/assets/img/logoSer.png')"
+          ref="logoImage"
+          :src="logoSrc"
+          :eager="true"
           max-height="125"
           class="ma-5"
           alt="Logo Uninorte"
           contain
+          @load="handleImageLoad('logo')"
         />
       </v-col>
       <!-- texto form atendimento-->
@@ -40,7 +42,6 @@
           <v-col class="my-border"><h5 class="pt-1 pb-1">SUPERINTENDENTE ACADÊMICA</h5></v-col>
         </v-row>
       </v-col>
-
     </v-row>
 
     <!-- versao-->
@@ -60,7 +61,6 @@
         <span class="pl-2">
           <b>NOME:</b>
         </span>
-
       </v-col>
       <v-col
         class="my-border">
@@ -72,17 +72,13 @@
 
     <!-- matricula e periodo-->
     <v-row no-gutters>
-
-      <!-- matricula txt-->
       <v-col
         class="my-border myrealce"
         cols="2">
         <span class="pl-2">
           <b>MATRICULA:</b>
         </span>
-
       </v-col>
-      <!-- matricula -->
       <v-col
         cols="5"
         class="my-border">
@@ -90,16 +86,13 @@
           {{ selectedSolicitacao.aluno.matricula }}
         </span>
       </v-col>
-      <!-- periodo txt-->
       <v-col
         class="my-border myrealce"
         cols="2">
         <span class="pl-2">
           <b>PERÍODO:</b>
         </span>
-
       </v-col>
-      <!-- periodo-->
       <v-col
         cols="3"
         class="my-border">
@@ -109,22 +102,17 @@
           {{ retornaObjetoCursoPeriodoTurnoTurma(selectedSolicitacao.codigo_geral)['identificador_periodo'] }}
         </span>
       </v-col>
-
     </v-row>
 
     <!-- curso e turma-->
     <v-row no-gutters>
-
-      <!-- curso txt-->
       <v-col
         class="my-border myrealce"
         cols="2">
         <span class="pl-2">
           <b>CURSO:</b>
         </span>
-
       </v-col>
-      <!-- curso-->
       <v-col
         cols="5"
         class="my-border">
@@ -132,7 +120,6 @@
           {{ selectedSolicitacao.curso.nome }}
         </span>
       </v-col>
-      <!-- turma txt-->
       <v-col
         class="my-border myrealce"
         cols="2">
@@ -140,7 +127,6 @@
           <b>TURMA:</b>
         </span>
       </v-col>
-      <!-- turma-->
       <v-col
         cols="3"
         class="my-border">
@@ -158,7 +144,6 @@
         <span class="pl-2">
           <b>TELEFONE:</b>
         </span>
-
       </v-col>
       <v-col
         class="my-border">
@@ -176,7 +161,6 @@
         <span class="pl-2">
           <b>EMAIL:</b>
         </span>
-
       </v-col>
       <v-col
         class="my-border">
@@ -197,33 +181,29 @@
     <v-row no-gutters>
       <v-col
         class="my-border text-center myrealce">
-
         <h3><b>DESCRIÇÃO DO ASSUNTO</b></h3>
-
       </v-col>
     </v-row>
 
     <!-- descricao do assunto , data e assinatura-->
     <template v-if="selectedSolicitacao.descricao !== ''">
       <v-row no-gutters>
-
-        <!-- descricao-->
         <v-col class="my-border text-justify pa-3">
           {{ selectedSolicitacao.descricao }}
-
           <br>
           <br>
-          <!-- data e assinatura-->
           <v-row>
-            <!-- data-->
             <v-col>DATA: {{ formatDate(selectedSolicitacao.data_solicitacao) }}</v-col>
             <v-col class="text-center">
               <v-img
-                :src="require('@/assets/img/assinaturadigitalAluno.png')"
+                ref="assinaturaImage1"
+                :src="assinaturaDigitalSrc"
                 :max-height="sizeDigitalSignature"
+                :eager="true"
                 class="pl-10"
                 alt="Assinado Digitalmente"
                 contain
+                @load="handleImageLoad('assinatura1')"
               />
             </v-col>
           </v-row>
@@ -235,9 +215,7 @@
     <v-row no-gutters>
       <v-col
         class="my-border text-center myrealce">
-
         <h3><b>INTERVENÇÃO REALIZADA</b></h3>
-
       </v-col>
     </v-row>
 
@@ -245,15 +223,11 @@
     <v-row no-gutters>
       <v-col
         class="my-border text-center">
-
         <h3><b>COORDENAÇÃO DO CURSO</b></h3>
-
       </v-col>
       <v-col
         class="my-border text-center">
-
         <h3><b>OUTROS SETORES (se necessário)</b></h3>
-
       </v-col>
     </v-row>
 
@@ -264,25 +238,24 @@
       <v-col
         class="my-border text-left">
         <span class="pl-2">{{ selectedSolicitacao.user_atendimento_resolucao.intervencao_coordenacao }}</span>
-
         <br><br>
-
         <span class="pl-2">
           Assinado por: {{ selectedSolicitacao.user_atendimento_resolucao.responsavel.nome }}
         </span>
         <v-img
-          :src="require('@/assets/img/assinaturadigitalAluno.png')"
+          ref="assinaturaImage2"
+          :src="assinaturaDigitalSrc"
           :max-height="sizeDigitalSignature"
+          :eager="true"
           class="pl-10"
           alt="Assinado Digitalmente"
           contain
+          @load="handleImageLoad('assinatura2')"
         />
       </v-col>
       <v-col
         class="my-border text-left">
-
         <span class="pl-2">{{ selectedSolicitacao.user_atendimento_resolucao.intervencao_outros }}</span>
-
       </v-col>
     </v-row>
 
@@ -291,40 +264,36 @@
       <v-col
         cols="2"
         class="my-border text-left myrealce">
-
         <h3 class="pl-2">DATA:</h3>
-
       </v-col>
       <v-col
         class="my-border text-center">
-
-        <h3 v-if="selectedSolicitacao.data_solucao !== '' && selectedSolicitacao.status !=='Aberto'">{{ formatDate(selectedSolicitacao.data_solucao) }}</h3>
-
+        <h3 v-if="selectedSolicitacao.data_solucao !== '' && selectedSolicitacao.status !=='Aberto'">
+          {{ formatDate(selectedSolicitacao.data_solucao) }}
+        </h3>
       </v-col>
       <v-col
         cols="2"
         class="my-border text-left myrealce">
-
         <h3 class="pl-2">DATA:</h3>
-
       </v-col>
-
       <v-col
         class="my-border text-center">
-
-        <h3 v-if="selectedSolicitacao.data_solucao !== '' && selectedSolicitacao.status !=='Aberto'">{{ formatDate(selectedSolicitacao.data_solucao) }}</h3>
-
+        <h3 v-if="selectedSolicitacao.data_solucao !== '' && selectedSolicitacao.status !=='Aberto'">
+          {{ formatDate(selectedSolicitacao.data_solucao) }}
+        </h3>
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
-<script>import {logoutMixin} from '@/mixins'
-import {mapGetters} from 'vuex'
+<script>
+import { logoutMixin } from '@/mixins'
+import { mapGetters } from 'vuex'
 import config from '../../http/config'
 
 export default {
+  name: 'VerChamado',
   components: {},
   mixins: [logoutMixin],
   props: {
@@ -335,66 +304,90 @@ export default {
   },
   data: () => ({
     configSis: config,
-    sizeDigitalSignature: 80
+    sizeDigitalSignature: 80,
+    logoSrc: require('@/assets/img/logoSer.png'),
+    assinaturaDigitalSrc: require('@/assets/img/assinaturadigitalAluno.png'),
+    loadedImages: {
+      logo: false,
+      assinatura1: false,
+      assinatura2: false
+    }
   }),
+
   computed: {
-    ...mapGetters(['usuarioLogado', 'usuarioEstaLogado'])
+    ...mapGetters(['usuarioLogado', 'usuarioEstaLogado']),
+    allImagesLoaded () {
+      return Object.values(this.loadedImages).every(loaded => loaded)
+    }
   },
 
   watch: {
+    allImagesLoaded (newVal) {
+      if (newVal) {
+        this.$emit('imagesLoaded')
+      }
+    }
   },
 
   async mounted () {
-  },
-  beforeDestroy () {
+    await this.preloadAllImages()
   },
 
   methods: {
-    formatDate (dateString) {
-      // eslint-disable-next-line no-constant-condition
-      if (dateString !== null || true || dateString !== '' || dateString !== undefined) {
-        if (dateString !== '') {
-          const [datePart] = dateString.split(' ')
-          const [year, month, day] = datePart.split('-')
-          return `${day}/${month}/${year}`
-        }
-      }
+    handleImageLoad (imageKey) {
+      this.$set(this.loadedImages, imageKey, true)
     },
+
+    async preloadAllImages () {
+      const images = [
+        { key: 'logo', src: this.logoSrc },
+        { key: 'assinatura1', src: this.assinaturaDigitalSrc },
+        { key: 'assinatura2', src: this.assinaturaDigitalSrc }
+      ]
+
+      await Promise.all(
+        images.map(({ key, src }) => {
+          return new Promise((resolve) => {
+            const img = new Image()
+            img.onload = () => {
+              this.$set(this.loadedImages, key, true)
+              resolve()
+            }
+            img.onerror = () => {
+              this.$set(this.loadedImages, key, true)
+              resolve()
+            }
+            img.src = src
+          })
+        })
+      )
+    },
+
+    formatDate (dateString) {
+      if (!dateString) return ''
+      const [datePart] = dateString.split(' ')
+      const [year, month, day] = datePart.split('-')
+      return `${day}/${month}/${year}`
+    },
+
     retornaObjetoCursoPeriodoTurnoTurma (codigo) {
-      if (codigo) {
-        // Verifica se o código tem o comprimento esperado
-        if (codigo.length < 12) {
-          throw new Error('Código inválido')
-        }
+      if (!codigo || codigo.length < 12) return {}
 
-        // Extrai as partes do código conforme as regras
-        const identificadorUnidade = codigo.substring(0, 3)
-        const codigoCurso = codigo.substring(3, 6)
-        const numeroConstante = codigo.substring(6, 8)
-        const identificadorPeriodo = codigo.substring(8, 10)
-        const codigoTurno = codigo.substring(10, codigo.length - 1) // Pega todos os caracteres até o penúltimo
-        const codigoTurma = codigo.substring(codigo.length - 1) // Pega o último caractere
-
-        // Monta o array com as informações extraídas
-        const informacoes = {
-          unidade: identificadorUnidade,
-          curso: codigoCurso,
-          numero_constante: numeroConstante,
-          identificador_periodo: identificadorPeriodo,
-          turno: codigoTurno,
-          codigo_turma: codigoTurma,
-          geral: codigo
-        }
-
-        return informacoes
+      return {
+        unidade: codigo.substring(0, 3),
+        curso: codigo.substring(3, 6),
+        numero_constante: codigo.substring(6, 8),
+        identificador_periodo: codigo.substring(8, 10),
+        turno: codigo.substring(10, codigo.length - 1),
+        codigo_turma: codigo.substring(codigo.length - 1),
+        geral: codigo
       }
     }
   }
 }
-
 </script>
-<style>
 
+<style>
 .bgConfig {
   background-color: #ffffff !important;
 }
@@ -406,5 +399,4 @@ export default {
 .myrealce{
   background-color: #d0d8d7;
 }
-
 </style>

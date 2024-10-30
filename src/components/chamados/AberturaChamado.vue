@@ -233,23 +233,27 @@ export default {
       this.$store.dispatch('efetuarLogin', {
         matricula: this.matricula,
         password: this.password
-      }).then(() => {
-        if (this.usuarioEstaLogado) {
-          this.$toastr.Add({
-            title: 'Sucesso!',
-            msg: 'Login efetuado com sucesso!',
-            type: 'success',
-            timeout: 5000
-          })
-          this.showInputSenha = false
-          this.mostraPesquisaMatricula = false
+      }).then(response => {
+        if (response.user.reset) {
+          this.$router.push({name: 'reset'})
         } else {
-          this.$toastr.Add({
-            title: 'Erro!',
-            msg: 'Matrícula ou senha inválida!',
-            type: 'error',
-            timeout: 5000
-          })
+          if (this.usuarioEstaLogado) {
+            this.$toastr.Add({
+              title: 'Sucesso!',
+              msg: 'Login efetuado com sucesso!',
+              type: 'success',
+              timeout: 5000
+            })
+            this.showInputSenha = false
+            this.mostraPesquisaMatricula = false
+          } else {
+            this.$toastr.Add({
+              title: 'Erro!',
+              msg: 'Matrícula ou senha inválida!',
+              type: 'error',
+              timeout: 5000
+            })
+          }
         }
       })
     },

@@ -94,7 +94,7 @@
               </v-list-item>
 
               <!-- reset de senha de aluno-->
-              <v-list-item to="/admuser">
+              <v-list-item to="/resetalunos">
                 <v-list-item-title>
                   <v-icon
                     class="mr-3"

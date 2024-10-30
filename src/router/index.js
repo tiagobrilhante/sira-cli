@@ -11,6 +11,7 @@ import AdmUser from '../components/areaAdministrativa/AdmUser.vue'
 import AdmUnidades from '../components/areaAdministrativa/AdmUnidades.vue'
 import AdmSemestreLetivo from '../components/areaAdministrativa/AdmSemestreLetivo.vue'
 import Relatorios from '../views/administrativo/Relatorios.vue'
+import ResetAlunos from '../views/administrativo/ResetAlunos.vue'
 
 Vue.use(VueRouter)
 const routes = [
@@ -58,6 +59,14 @@ const routes = [
     path: '/relatorios',
     name: 'relatorios',
     component: Relatorios,
+    meta: {
+      logado: true
+    }
+  },
+  {
+    path: '/resetalunos',
+    name: 'resetalunos',
+    component: ResetAlunos,
     meta: {
       logado: true
     }

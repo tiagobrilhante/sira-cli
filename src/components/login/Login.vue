@@ -303,10 +303,13 @@ export default {
           .then(response => {
             if (this.tipo === 'Aluno' && response.user.tipo === 'Aluno') {
               // aqui eu posso emitir para ocultar o login
+              if (response.user.reset) {
+                this.$router.push({name: 'reset'})
+              } else {
+                this.getMeusAtendimentos('Aberto')
 
-              this.getMeusAtendimentos('Aberto')
-
-              this.startCountdown()
+                this.startCountdown()
+              }
             } else if (this.tipo === 'Admin' && response.user.tipo === 'Aluno') {
               // o aluno não pode estar aqui
               // fecho o dialog e lanço o toaster informando que o aluno não pode estar aqui
@@ -316,7 +319,11 @@ export default {
                 'Você não é um administrador', 'Erro!'
               )
             } else {
-              this.$router.push({name: 'home'})
+              if (response.user.reset) {
+                this.$router.push({name: 'reset'})
+              } else {
+                this.$router.push({name: 'home'})
+              }
             }
             /*
             if (response.user.reset) {

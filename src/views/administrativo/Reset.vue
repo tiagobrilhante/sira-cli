@@ -18,9 +18,9 @@
                 cols="10"
                 offset="1">
                 <div class="text-center pt-5">
-                  <h1>Bem-vindo ao sistema CMA em Números!</h1>
-                  <p>Sistema de Gerenciamento de Indicadores do CMA</p>
-                  <p>Você precisa alterar a senha para efetuar o primeiro acesso</p>
+                  <h1>Bem-vindo ao sistema SIRA!</h1>
+                  <p>Sistema Interno de Registro de Atendimentos</p>
+                  <p>Você precisa alterar a senha para efetuar o acesso</p>
                 </div>
               </v-col>
             </v-row>
@@ -158,7 +158,7 @@ export default {
               'Senha alterada com sucesso', 'Sucesso!'
             )
             this.$store.commit('DESLOGAR_USUARIO')
-            this.$router.push({name: 'login'})
+            this.$router.push({name: 'index'})
           }, err => {
             console.log(err)
             this.$toastr.e(
