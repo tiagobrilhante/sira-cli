@@ -90,38 +90,23 @@
           <!-- seletores de usuário-->
           <v-container fluid>
             <v-row>
-              <v-col cols="2">
-                <v-checkbox
-                  v-model="tipoUserSelected"
-                  label="Administradores"
-                  value="Administrador"
-                  @click="getByTipo(tipoUserSelected)"
-                />
-              </v-col>
-              <v-col cols="2">
-                <v-checkbox
-                  v-model="tipoUserSelected"
-                  label="Administradores Gerais"
-                  value="Administrador Geral"
-                  @click="getByTipo(tipoUserSelected)"
-                />
-              </v-col>
-
-              <v-col cols="8">
+              <v-col>
                 <v-row>
                   <v-col>
                     <v-btn
+                      :color="ajustaCorSelected('Todos')"
                       class="white--text mr-4 mt-3"
-                      color="rgb(250, 115, 59)"
-                      rounded>
+                      rounded
+                      @click="buscaPorUnidade('Todos')">
                       Todos
                     </v-btn>
                     <v-btn
                       v-for="unidade in unidades"
                       :key="unidade.id"
+                      :color="ajustaCorSelected(unidade.id)"
                       class="white--text mr-4 mt-3"
-                      color="rgb(250, 115, 59)"
-                      rounded>
+                      rounded
+                      @click="buscaPorUnidade(unidade.id)">
                       {{ unidade.nome }}
                     </v-btn>
 
@@ -220,6 +205,7 @@
       <!--Dialog para add/edit usuário-->
       <v-dialog
         v-model="dialogAddEditUser"
+        persistent
         max-width="70%">
         <v-card>
           <v-form @submit.prevent="efetuarCadastroEditUsuario">
@@ -356,22 +342,41 @@
                   <v-row>
                     <v-col>
                       <span class="pl-3">Cursos (Obrigatório)</span>
-                      <v-select
-                        v-model="editedUser.cursos"
-                        :items="cursosOptions"
-                        chips
-                        class="ml-3"
-                        clearable
-                        deletable-chips
-                        dense
-                        item-text="nome"
-                        item-value="id"
-                        label="Selecione os cursos vinculados a esse Administrador"
-                        multiple
-                        name="cursos"
-                        rounded
-                        solo
-                      />
+
+                      <template>
+                        <v-select
+                          ref="cursoSelect"
+                          v-model="editedUser.cursos"
+                          :items="transformedCursosOptions"
+                          :menu-props="menuProps"
+                          open-on-clear
+                          chips
+                          clearable
+                          deletable-chips
+                          dense
+                          return-object
+                          item-text="displayName"
+                          item-value="id"
+                          label="Selecione os cursos nos quais você está matriculado"
+                          multiple
+                          name="cursos"
+                          rounded
+                          solo
+                        >
+                          <template v-slot:append-item>
+                            <v-divider class="mb-2"/>
+                            <v-list-item>
+                              <v-btn
+                                color="primary"
+                                block
+                                @click.stop="concluirSelecao"
+                              >
+                                Concluir Seleção
+                              </v-btn>
+                            </v-list-item>
+                          </template>
+                        </v-select>
+                      </template>
 
                     </v-col>
                   </v-row>
@@ -465,7 +470,7 @@
       <!--Dialog para resetar usuário - TEM QUE ARRUMAR-->
       <v-dialog
         v-model="dialogReset"
-        max-width="800px">
+        max-width="60%">
         <v-card>
 
           <!-- title-->
@@ -528,7 +533,7 @@
             <ul>
               <li
                 v-for="curso in editedUser.cursos"
-                :key="curso.id"> {{ curso.nome }}
+                :key="curso.id"> {{ curso.nome }} - {{ curso.unidade.nome }}
               </li>
             </ul>
           </v-card-text>
@@ -639,13 +644,25 @@ export default {
     cursosOptions: [],
     tipoUserSelected: ['Administrador', 'Administrador Geral'],
     unidades: [],
-    dialogVerCursos: false
+    dialogVerCursos: false,
+    selectedTipo: 'Todos',
+    menuProps: {
+      closeOnContentClick: false,
+      closeOnClick: false
+    }
   }),
   computed: {
-    ...mapGetters(['usuarioLogado', 'usuarioEstaLogado'])
+    ...mapGetters(['usuarioLogado', 'usuarioEstaLogado']),
+
+    transformedCursosOptions () {
+      return this.cursosOptions.map(curso => ({
+        ...curso,
+        displayName: `${curso.nome} - UNIDADE: ${curso.unidade.nome}`
+      }))
+    }
   },
   async mounted () {
-    await this.getUsers()
+    await this.getUsers(this.selectedTipo)
     await this.getUnidades()
     await this.getCursos()
   },
@@ -653,7 +670,7 @@ export default {
 
     async getUsers () {
       try {
-        this.$http.get('users/adm')
+        this.$http.get('users/adm/' + this.selectedTipo)
           .then(response => {
             this.usuarios = response.data
           })
@@ -788,8 +805,15 @@ export default {
     },
 
     openDialogReset (item) {
-      this.editedUser = Object.assign({}, item)
       this.editedIndex = this.usuarios.indexOf(item)
+
+      this.editedUser = Object.assign({}, item)
+      let ajuste = []
+      this.editedUser.cursos.forEach(curso => {
+        ajuste.push(curso.curso)
+      })
+      this.editedUser.cursos = ajuste
+
       this.dialogReset = true
     },
 
@@ -841,9 +865,6 @@ export default {
       return [contador, msgRetornoErro]
     },
 
-    getByTipo (tipoUserSelected) {
-    },
-
     openDialogVerCursoUser (item) {
       this.editedUser = Object.assign({}, item)
       let ajuste = []
@@ -852,6 +873,27 @@ export default {
       })
       this.editedUser.cursos = ajuste
       this.dialogVerCursos = true
+    },
+
+    buscaPorUnidade (id) {
+      this.selectedTipo = id
+      this.getUsers()
+    },
+
+    ajustaCorSelected (qual) {
+      if (qual === this.selectedTipo) {
+        return '#015088'
+      } else {
+        return 'rgb(250, 115, 59)'
+      }
+    },
+
+    concluirSelecao () {
+      // Fecha o menu do v-select
+      if (this.$refs.cursoSelect) {
+        this.$refs.cursoSelect.isMenuActive = false
+        this.$refs.cursoSelect.isFocused = false
+      }
     }
   }
 }

@@ -70,6 +70,7 @@
             class="text-right"
             cols="4">
             <v-btn
+              :loading="loading"
               block
               rounded
               class="white--text"
@@ -124,13 +125,19 @@ export default {
     vigenciaRelatorio: [],
     selectedVigencia: '',
     cursosDisponiveis: [],
-    selectedCurso: ''
+    selectedCurso: '',
+    loading: false
   }),
   computed: {
     ...mapGetters(['usuarioLogado', 'usuarioEstaLogado'])
   },
 
   watch: {
+    vigenciaRelatorio (newVal) {
+      if (newVal.length > 0) {
+        this.startLoading()
+      }
+    }
   },
 
   async mounted () {
@@ -140,6 +147,12 @@ export default {
   },
 
   methods: {
+    async startLoading () {
+      this.loading = true
+      setTimeout(() => {
+        this.loading = false
+      }, 4000)
+    },
 
     async getVigencias () {
       try {
@@ -197,6 +210,8 @@ export default {
     },
 
     async downloadPdf () {
+      this.loading = true
+
       const verChamadoPages = this.$refs.verChamadoPages
       const pdf = new JsPDF({
         orientation: 'portrait',
@@ -205,29 +220,36 @@ export default {
       })
 
       const margin = 20 // Adjust this value as needed
-
       const pageWidth = pdf.internal.pageSize.getWidth()
       const pageHeight = pdf.internal.pageSize.getHeight()
 
       for (let i = 0; i < verChamadoPages.length; i++) {
         const element = verChamadoPages[i]
-        const canvas = await html2canvas(element, { scale: 2 })
+
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          onclone: (clonedDoc) => {
+            const images = clonedDoc.querySelectorAll('img')
+            images.forEach((img) => {
+              if (!img.complete) {
+                img.onload = () => {}
+              }
+            })
+          }
+        })
+
         const imgData = canvas.toDataURL('image/jpeg', 1.0)
 
         let imgWidth = pageWidth - 2 * margin
         let imgHeight = (canvas.height * imgWidth) / canvas.width
 
-        // const positionX = margin
-        let positionY = margin
-
-        // Check if the image height fits the page, adjust if necessary
         if (imgHeight > pageHeight - 2 * margin) {
           imgHeight = pageHeight - 2 * margin
           imgWidth = (canvas.width * imgHeight) / canvas.height
         }
 
-        // Center the image if it's narrower than the page width
         const centeredPositionX = (pageWidth - imgWidth) / 2
+        const positionY = margin
 
         pdf.addImage(
           imgData,
@@ -245,6 +267,7 @@ export default {
 
       const namefile = `relatorio.pdf`
       pdf.save(namefile)
+      this.loading = false
     },
 
     ajustaCorBtnVigencia (vigencia) {
