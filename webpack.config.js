@@ -96,8 +96,6 @@ if (process.env.NODE_ENV === 'production') {
       'process.env': {
         NODE_ENV: '"production"',
         API_URL: config.baseURL
-        // API_URL: '"http://totemapi2.cma.eb.mil.br/api"' // aqui é pra colocar o endereço da API externa em produção
-        // API_URL: '"http://totemapi.12rm.eb.mil.br/api"' // aqui é pra colocar o endereço da API externa em produção
       }
     }),
     new webpack.optimize.UglifyJsPlugin({

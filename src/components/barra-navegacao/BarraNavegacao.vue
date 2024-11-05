@@ -145,7 +145,7 @@
               </v-list-item>
 
               <!-- gerenciamento de Semestres-->
-              <v-list-item to="/home">
+              <v-list-item to="/estatisticas">
                 <v-list-item-title>
                   <v-icon
                     class="mr-3"

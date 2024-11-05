@@ -12,6 +12,7 @@ import AdmUnidades from '../components/areaAdministrativa/AdmUnidades.vue'
 import AdmSemestreLetivo from '../components/areaAdministrativa/AdmSemestreLetivo.vue'
 import Relatorios from '../views/administrativo/Relatorios.vue'
 import ResetAlunos from '../views/administrativo/ResetAlunos.vue'
+import Estatisticas from '../views/administrativo/Estatisticas.vue'
 
 Vue.use(VueRouter)
 const routes = [
@@ -88,6 +89,14 @@ const routes = [
     }
   },
   {
+    path: '/estatisticas',
+    name: 'estatisticas',
+    component: Estatisticas,
+    meta: {
+      logado: true
+    }
+  },
+  {
     path: '*',
     component: Index
   },
@@ -124,6 +133,15 @@ router.beforeEach((routeTo, routeFrom, next) => {
 
   if (routeTo.meta.publica && store.state.token) {
     return next({name: 'home'})
+  }
+
+  // Suppress NavigationDuplicated error
+  const originalPush = VueRouter.prototype.push
+  VueRouter.prototype.push = function push (location, onResolve, onReject) {
+    if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+    return originalPush.call(this, location).catch(err => {
+      if (err.name !== 'NavigationDuplicated') throw err
+    })
   }
 
   next()

@@ -42,7 +42,11 @@ const actions = {
           resolve(response.data)
         })
         .catch(err => {
-          console.log(err)
+          if (err.response && err.response.status === 401) {
+            console.error('Credenciais Inválidas')
+          } else {
+            console.error('An error occurred:', err.message)
+          }
           reject(err)
         })
     })
