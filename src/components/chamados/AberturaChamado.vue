@@ -9,6 +9,7 @@
         <span class="pl-3">Digite sua Matricula</span>
         <v-text-field
           v-mask="'#########'"
+          ref="matriculaField"
           v-model="matricula"
           :rules="[v => /^\d{9}$/.test(v) || 'A matrícula deve conter exatamente 9 dígitos']"
           dense
@@ -123,6 +124,10 @@ export default {
   },
 
   async mounted () {
+    this.$nextTick(() => {
+      this.$refs.matriculaField.focus()
+    })
+
     this.$root.$on('reset-matricula', this.tentaNovamentePesquisaMatricula)
   },
 

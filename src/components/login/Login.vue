@@ -93,7 +93,7 @@
           elevation="10"
           rounded="xxl">
 
-          <v-row>
+          <v-row dense>
             <v-col>
               <v-alert
                 dense
@@ -104,10 +104,52 @@
                 Para sua segurança, esta tela se fechará em: {{ contaSair }} segundos
               </v-alert>
 
+              <v-row
+                class="pb-3"
+                dense>
+                <v-col><h3 class="pt-1">Dados do Aluno</h3></v-col>
+                <v-col class="text-right"><v-btn
+                  color="#015088"
+                  class="white--text"
+                  x-small
+                  rounded
+                  @click="openDialogAjustaDados"> <v-icon
+                    class="pr-2"
+                    x-small
+                    color="white">
+                    mdi-cog
+                </v-icon>Ajuste seus dados</v-btn></v-col>
+              </v-row>
+
+              <!-- dados básicos do aluno (nome, matricula, telefone e email-->
+              <v-alert
+                rounded="xxl"
+                dense
+                class="white--text"
+                elevation="5"
+                color="#015088">
+
+                <!-- nome e matricula-->
+                <v-row dense>
+                  <!-- nome-->
+                  <v-col><b>Nome: </b>{{ usuarioLogado.nome }}</v-col>
+                  <!-- matricula-->
+                  <v-col><b>Matricula: </b>{{ usuarioLogado.matricula }}</v-col>
+                </v-row>
+
+                <!-- telefone e email-->
+                <v-row dense>
+                  <!-- telefone-->
+                  <v-col><b>Telefone </b>{{ usuarioLogado.telefone }}</v-col>
+                  <!-- email-->
+                  <v-col><b>Email </b>{{ usuarioLogado.email }}</v-col>
+                </v-row>
+              </v-alert>
+
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row dense>
             <v-col><v-btn
               :color="returnColorBtnSelected('Aberto')"
               block
@@ -225,6 +267,140 @@
       </v-card>
     </v-dialog>
 
+    <!--Dialog para ajustar dados de um aluno-->
+    <v-dialog
+      v-model="dialogAjustaDados"
+      persistent
+      max-width="70%">
+      <v-card>
+        <v-card-title
+          class="justify-center"
+          primary-title>
+          Ajuste de dados
+        </v-card-title>
+        <v-card-text>
+
+          <!-- nome completo / matricula -->
+          <v-row dense>
+
+            <!--nome completo-->
+            <v-col>
+              <span class="pl-3">Nome Completo (Obrigatório)</span>
+              <v-text-field
+                v-model="editedUser.nome"
+                dense
+                label="Nome Completo"
+                rounded
+                solo
+              />
+            </v-col>
+
+            <!-- matricula -->
+            <v-col>
+              <span class="pl-3">Matricula</span>
+
+              <v-text-field
+                v-mask="'#########'"
+                v-model="editedUser.matricula"
+                :rules="[v => /^\d{9}$/.test(v) || 'A matrícula deve conter exatamente 9 dígitos']"
+                dense
+                label="Matricula"
+                maxlength="9"
+                rounded
+                solo
+              />
+
+            </v-col>
+
+          </v-row>
+
+          <!-- email / Tel -->
+          <v-row dense>
+
+            <!--email-->
+            <v-col>
+              <span class="pl-3">Email (Obrigatório)</span>
+              <v-text-field
+                v-model="editedUser.email"
+                dense
+                label="Email"
+                rounded
+                solo
+              />
+            </v-col>
+
+            <!-- telefone -->
+            <v-col>
+              <span class="pl-3">Telefone (Obrigatório)</span>
+              <v-text-field
+                v-mask-phone.br
+                v-model="editedUser.telefone"
+                dense
+                label="Telefone de Contato"
+                rounded
+                solo
+              />
+            </v-col>
+
+          </v-row>
+
+          <v-alert
+            v-if="altereiMatricula"
+            color="rgb(250, 115, 59)"
+            elevation="10">
+            <h3 class="white--text"> Você está modificando o número de sua matrícula e por isso, ao clicar em alterar, será necessário realizar um novo login.</h3>
+
+            <br>
+
+            <v-alert
+              elevation="10"
+              dense
+              class="pt-0 pb-0 mt-0"
+              color="white">
+              <v-checkbox
+                v-model="checkboxConfirmacao"
+                color="black"
+                label="Eu estou ciente dessa ação."
+                @change = "btnAlteraDisabled = !btnAlteraDisabled"
+
+              />
+            </v-alert>
+
+          </v-alert>
+
+        </v-card-text>
+        <v-card-actions class="pb-5">
+
+          <v-row dense>
+            <v-col/>
+            <v-col>
+              <v-btn
+                :disabled = "btnAlteraDisabled"
+                rounded
+                block
+                class="white--text"
+                color="#015088"
+                @click="doEditDados">Alterar
+              </v-btn>
+            </v-col>
+            <v-col>
+
+              <v-btn
+                rounded
+                block
+                class="white--text"
+                color="rgb(250, 115, 59)"
+                @click="fechaDialogAjustaDados">Cancelar
+              </v-btn>
+            </v-col>
+            <v-col/>
+          </v-row>
+
+        </v-card-actions>
+
+      </v-card>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -286,7 +462,12 @@ export default {
       },
       opcaoSelecionada: 'Aberto',
       retornoOk: false,
-      contaSair: 60
+      contaSair: 60,
+      dialogAjustaDados: false,
+      editedUser: {},
+      checkboxConfirmacao: false,
+      altereiMatricula: false,
+      btnAlteraDisabled: false
     }
   },
   computed: {
@@ -421,6 +602,103 @@ export default {
           this.$emit('countdown-finished')
         }
       }, 1000)
+    },
+
+    openDialogAjustaDados () {
+      this.contaSair = 60
+      this.dialogAjustaDados = true
+      this.editedUser = Object.assign({}, this.usuarioLogado)
+    },
+
+    fechaDialogAjustaDados () {
+      this.contaSair = 60
+      this.dialogAjustaDados = false
+      this.editedUser = {}
+    },
+
+    doEditDados () {
+      this.contaSair = 60
+      let contaErros = 0
+      const promises = []
+
+      // Check the integrity of email and matricula (unique)
+      if (this.editedUser.matricula !== this.usuarioLogado.matricula) {
+        this.altereiMatricula = true
+        this.btnAlteraDisabled = true
+
+        if (!this.checkboxConfirmacao) {
+          return
+        }
+
+        const objetoEnvio = {
+          'matricula': this.editedUser.matricula
+        }
+        promises.push(
+          this.$http.put('users/checamatricula/' + this.usuarioLogado.id, objetoEnvio)
+            .then(response => {
+              if (response.data === 'Matrícula já registrada por outro usuário.') {
+                this.$toastr.e(response.data, 'Erro!')
+                contaErros++
+                this.checkboxConfirmacao = false
+                this.altereiMatricula = false
+                this.btnAlteraDisabled = false
+              }
+            })
+            .catch(erro => {
+              console.log(erro)
+              contaErros++
+            })
+        )
+      }
+
+      if (this.editedUser.email !== this.usuarioLogado.email) {
+        const objetoEnvio = {
+          'email': this.editedUser.email
+        }
+        promises.push(
+          this.$http.put('users/checaemail/' + this.usuarioLogado.id, objetoEnvio)
+            .then(response => {
+              if (response.data === 'Email já registrado por outro usuário.') {
+                this.checkboxConfirmacao = false
+                this.altereiMatricula = false
+                this.btnAlteraDisabled = false
+                this.$toastr.e(response.data, 'Erro!')
+                contaErros++
+              }
+            })
+            .catch(erro => {
+              console.log(erro)
+              contaErros++
+            })
+        )
+      }
+
+      Promise.all(promises).then(() => {
+        if (contaErros === 0) {
+          if (this.editedUser.nome === '' || this.editedUser.matricula === '' || this.editedUser.telefone === '' || this.editedUser.email === '') {
+            this.$toastr.e('Todos os campos são obrigatórios', 'Erro!')
+          } else {
+            this.$http.put('users/editaaluno/' + this.usuarioLogado.id, this.editedUser)
+              .then(response => {
+                this.$toastr.s('Dados alterados com sucesso', 'Sucesso!')
+                if (this.altereiMatricula) {
+                  this.$emit('countdown-finished')
+                } else {
+                  this.$store.dispatch('atualizarUsuarioLogado', response.data)
+                  this.dialogAjustaDados = false
+                  this.editedUser = {}
+                  this.checkboxConfirmacao = false
+                  this.altereiMatricula = false
+                  this.btnAlteraDisabled = false
+                }
+              })
+              .catch(erro => {
+                console.log(erro)
+                this.$toastr.e('Erro ao alterar os dados', 'Erro!')
+              })
+          }
+        }
+      })
     }
   }
 }
