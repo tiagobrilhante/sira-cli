@@ -3,6 +3,7 @@
     <v-col>
       <!-- seleção de vigências disponíveis-->
       <v-alert
+        v-if="vigenciasDisponiveis.length > 0"
         color="rgb(250, 115, 59)"
         rounded="xxl">
         <v-row>
@@ -23,6 +24,14 @@
               @click="verificaCursos(vigencia)">{{ vigencia }}</v-btn>
           </v-col>
         </v-row>
+      </v-alert>
+
+      <v-alert
+        v-else
+        class="white--text"
+        color="rgb(250, 115, 59)"
+        rounded="xxl">
+        Não existem dados para gerar um relatório
       </v-alert>
 
       <!-- cursos disponiveis-->
