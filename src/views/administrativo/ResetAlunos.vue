@@ -29,7 +29,7 @@
                 size="36">
                 mdi-account-group
               </v-icon>
-              Resetar de Alunos
+              Resetar Alunos
             </h2>
 
           </v-col>

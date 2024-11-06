@@ -42,8 +42,10 @@
 
       </v-row>
 
-      <!-- seletor de unidades-->
-      <v-row dense>
+      <!-- seletor para ADMINISTRADORES GERAIS-->
+      <v-row
+        v-if="usuarioLogado.tipo === 'Administrador Geral'"
+        dense>
 
         <v-col>
           <!--Banner-->
@@ -116,6 +118,102 @@
                     small
                     @click="fazPesquisaCurso(curso.id)"
                   >{{ curso.nome }}
+                  </v-btn>
+
+                </v-col>
+
+              </v-row>
+
+              <!-- Seletor de aberto fechado-->
+              <v-row dense>
+                <!--cabecalho-->
+                <v-col cols="1">
+                  <h3>
+                    Estado:
+                  </h3>
+
+                </v-col>
+                <v-col>
+                  <v-btn
+                    :color="ajustaCorEstado('Aberto')"
+                    class="white--text mt-1"
+                    rounded
+                    small
+                    @click="fazPesquisaEstado('Aberto')">Aberto
+                  </v-btn>
+
+                  <v-btn
+                    :color="ajustaCorEstado('Deferido')"
+                    class="white--text mt-1 ml-3"
+                    rounded
+                    small
+                    @click="fazPesquisaEstado('Deferido')">Deferido
+                  </v-btn>
+
+                  <v-btn
+                    :color="ajustaCorEstado('Indeferido')"
+                    class="white--text mt-1 ml-3"
+                    rounded
+                    small
+                    @click="fazPesquisaEstado('Indeferido')">Indeferido
+                  </v-btn>
+                </v-col>
+
+              </v-row>
+            </v-container>
+
+          </v-alert>
+
+        </v-col>
+
+      </v-row>
+
+      <!-- seletor pra ADMINISTRADORES -->
+      <v-row
+        v-if="usuarioLogado.tipo === 'Administrador'"
+        dense>
+
+        <v-col>
+          <!--Banner-->
+          <v-alert
+            dense
+            elevation="21"
+          >
+            <v-alert
+              class="white--text"
+              dense
+              color="#015088">
+              <h2>Filtros</h2>
+            </v-alert>
+
+            <v-container fluid>
+              <!-- seletor de CURSOS-->
+              <v-row
+                dense>
+                <!--cabecalho-->
+                <v-col cols="1">
+                  <h3>
+                    Cursos:
+                  </h3>
+                </v-col>
+                <v-col>
+                  <v-btn
+                    :color="ajustaSelectedCurso('todos')"
+                    class="white--text mt-1 "
+                    rounded
+                    small
+                    @click="fazPesquisaCurso('todos')">Todos
+                  </v-btn>
+
+                  <v-btn
+                    v-for="curso in usuarioLogado.cursos"
+                    :key="curso.curso.id"
+                    :color="ajustaSelectedCurso(curso.curso.id)"
+                    class="ml-3 white--text mt-1"
+                    rounded
+                    small
+                    @click="fazPesquisaCurso(curso.curso.id)"
+                  >{{ curso.curso.nome }} - {{ curso.curso.unidade.nome }}
                   </v-btn>
 
                 </v-col>

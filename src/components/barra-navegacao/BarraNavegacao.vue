@@ -64,7 +64,9 @@
             <v-list>
 
               <!-- gerenciamento de unidades-->
-              <v-list-item to="/admunidades">
+              <v-list-item
+                v-if="usuarioEstaLogado && usuarioResetado && usuarioLogado.tipo === 'Administrador Geral'"
+                to="/admunidades">
                 <v-list-item-title>
                   <v-icon
                     class="mr-3"
@@ -74,7 +76,9 @@
               </v-list-item>
 
               <!-- gerenciamento de Semestres-->
-              <v-list-item to="/admsemestreletivo">
+              <v-list-item
+                v-if="usuarioEstaLogado && usuarioResetado && usuarioLogado.tipo === 'Administrador Geral'"
+                to="/admsemestreletivo">
                 <v-list-item-title>
                   <v-icon
                     class="mr-3"
@@ -84,7 +88,9 @@
               </v-list-item>
 
               <!-- gerenbciamento de usuarios-->
-              <v-list-item to="/admuser">
+              <v-list-item
+                v-if="usuarioEstaLogado && usuarioResetado && usuarioLogado.tipo === 'Administrador Geral'"
+                to="/admuser">
                 <v-list-item-title>
                   <v-icon
                     class="mr-3"

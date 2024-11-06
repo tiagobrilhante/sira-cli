@@ -60,10 +60,13 @@
         color="#015088"
         rounded="xxl">
         <v-row>
+
+          <!-- vigência selecionada-->
           <v-col>
             <h2 class="white--text">Vigência: {{ selectedVigencia }} - {{ selectedCurso }}</h2>
           </v-col>
 
+          <!-- download do pdf-->
           <v-col
             class="text-right"
             cols="4">
@@ -78,7 +81,9 @@
               Download PDF
             </v-btn>
           </v-col>
+
         </v-row>
+
       </v-alert>
 
       <!-- área designada aos dados-->

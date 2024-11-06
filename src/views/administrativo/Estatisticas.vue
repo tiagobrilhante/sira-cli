@@ -97,7 +97,7 @@
 
             <!--unidades e cursos abrangidos-->
             <v-row
-              v-if="dadosEstatisticos.unidades"
+              v-if="dadosEstatisticos.unidades && usuarioLogado.tipo === 'Administrador Geral'"
               dense>
 
               <!-- unidades abrangidas-->
@@ -114,7 +114,7 @@
 
             <!--coordenadores envolvidos e alunos cadastrados-->
             <v-row
-              v-if="dadosEstatisticos.coordenadores"
+              v-if="dadosEstatisticos.coordenadores && usuarioLogado.tipo === 'Administrador Geral'"
               dense>
 
               <!-- coordenadores envolvidos-->
@@ -130,7 +130,9 @@
             </v-row>
 
             <!-- periodos em uso-->
-            <v-row dense>
+            <v-row
+              v-if="usuarioLogado.tipo === 'Administrador Geral'"
+              dense>
               <v-col>
                 <b>Períodos em uso: </b> {{ dadosEstatisticos.qtdperiodos }}
               </v-col>
@@ -164,7 +166,7 @@
         <br>
         <v-row>
           <!-- por unidade-->
-          <v-col>
+          <v-col v-if="usuarioLogado.tipo === 'Administrador Geral'">
             <v-btn
               :color="ajustaCorBtnNivelMax('unidade')"
               block

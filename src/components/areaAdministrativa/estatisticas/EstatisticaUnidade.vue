@@ -17,7 +17,7 @@
                 v-if="dadosEstatisticos.unidade.nome"
                 dense>
                 <v-col><b>Nome:</b> {{ dadosEstatisticos.unidade.nome }}</v-col>
-                <v-col><b>Matricula:</b> {{ dadosEstatisticos.unidade.prefixo }}</v-col>
+                <v-col><b>Prefixo:</b> {{ dadosEstatisticos.unidade.prefixo }}</v-col>
               </v-row>
 
               <!-- cursos da unidade -->
