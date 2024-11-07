@@ -46,7 +46,8 @@
               @click="openDialogAddEditUnidade('add')">
               <v-icon
                 class="mr-4"
-                color="white">mdi-plus-circle</v-icon>
+                color="white">mdi-plus-circle
+              </v-icon>
               Adicionar Nova Unidade
             </v-btn>
           </v-col>
@@ -140,14 +141,16 @@
               <v-icon
                 class="ml-4"
                 small
-                @click="openDialogDetalhes(curso)">mdi-magnify</v-icon>
+                @click="openDialogDetalhes(curso)">mdi-magnify
+              </v-icon>
 
             </li>
           </ul>
           <v-chip
             v-else
             color="yellow"
-            small> Sem Cursos Cadastrados</v-chip>
+            small> Sem Cursos Cadastrados
+          </v-chip>
 
         </template>
 
@@ -258,7 +261,8 @@
                           <v-icon
                             class="mr-4"
                             color="white"
-                            small>mdi-plus-circle</v-icon>
+                            small>mdi-plus-circle
+                          </v-icon>
                           Adicionar Curso
                         </v-btn>
                       </v-col>
@@ -348,6 +352,25 @@
                       </v-row>
                     </v-alert>
 
+                    <v-row v-if="editedUnidade.cursos.length > 0">
+                      <v-col/>
+                      <v-col class="text-right">
+                        <v-btn
+                          class="white--text"
+                          color="rgb(250, 115, 59)"
+                          rounded
+                          small
+                          @click="addCursoToAdd">
+                          <v-icon
+                            class="mr-4"
+                            color="white"
+                            small>mdi-plus-circle
+                          </v-icon>
+                          Adicionar Curso
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+
                   </v-alert>
                 </v-col>
               </v-row>
@@ -411,11 +434,13 @@
             <v-spacer/>
             <v-btn
               color="grey lighten-1"
-              @click="closeDelete">Cancelar</v-btn>
+              @click="closeDelete">Cancelar
+            </v-btn>
             <span class="pl-5 pr-5"/>
             <v-btn
               color="red lighten-1"
-              @click="deleteUnidadeConfirm">Excluir</v-btn>
+              @click="deleteUnidadeConfirm">Excluir
+            </v-btn>
             <v-spacer/>
           </v-card-actions>
         </v-card>
@@ -448,11 +473,13 @@
             <v-spacer/>
             <v-btn
               color="grey lighten-1"
-              @click="dialogDeleteCursoCadastrado = false">Cancelar</v-btn>
+              @click="dialogDeleteCursoCadastrado = false">Cancelar
+            </v-btn>
             <span class="pl-5 pr-5"/>
             <v-btn
               color="red lighten-1"
-              @click="deleteCursoCadastradoConfirm">Excluir</v-btn>
+              @click="deleteCursoCadastradoConfirm">Excluir
+            </v-btn>
             <v-spacer/>
           </v-card-actions>
         </v-card>
@@ -502,7 +529,8 @@
             <v-btn
               class="white--text"
               color="rgb(250, 115, 59)"
-              @click="dialogDetalheCurso = false"> Fechar</v-btn>
+              @click="dialogDetalheCurso = false"> Fechar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -635,41 +663,58 @@ export default {
         objetoParaEnvio['prefixo'] = this.editedUnidade.prefixo
         objetoParaEnvio['cursos'] = this.editedUnidade.cursos
 
-        if (this.tipoAcao === 'add') {
-          // aqui eu vou adicionar a unidade
-          try {
-            this.$http.post('unidades', objetoParaEnvio)
-              .then(() => {
+        try {
+          this.$http.post('unidades/checacodcursos', objetoParaEnvio)
+            .then(response => {
+              if (response.data === 'duplicado') {
                 this.getUnidades()
-                this.dialogAddEditUnidade = false
-                this.$toastr.s(
-                  'Unidade Cadastrada com sucesso', 'Sucesso!'
+                this.$toastr.e(
+                  'Existem cursos com o mesmo código.', 'Erro!'
                 )
-              })
-              .catch(erro => console.log(erro))
-          } catch (e) {
-            this.$toastr.e(
-              'Houve um erro na tentativa de execução: <br>' + e, 'Erro!'
-            )
-          }
-        } else {
-          // aqui vou editar
-          objetoParaEnvio['id'] = this.editedUnidade.id
-          try {
-            this.$http.put('unidades/' + this.editedUnidade.id, objetoParaEnvio)
-              .then(response => {
-                this.getUnidades()
-                this.$toastr.s(
-                  'Unidade alterada com sucesso', 'Sucesso!'
-                )
-                this.dialogAddEditUnidade = false
-              })
-              .catch(erro => console.log(erro))
-          } catch (e) {
-            this.$toastr.e(
-              'Houve um erro na tentativa de execução: <br>' + e, 'Erro!'
-            )
-          }
+              } else {
+                if (this.tipoAcao === 'add') {
+                  // aqui eu vou adicionar a unidade
+                  try {
+                    this.$http.post('unidades', objetoParaEnvio)
+                      .then(() => {
+                        this.getUnidades()
+                        this.dialogAddEditUnidade = false
+                        this.$toastr.s(
+                          'Unidade Cadastrada com sucesso', 'Sucesso!'
+                        )
+                      })
+                      .catch(erro => console.log(erro))
+                  } catch (e) {
+                    this.$toastr.e(
+                      'Houve um erro na tentativa de execução: <br>' + e, 'Erro!'
+                    )
+                  }
+                } else {
+                  // aqui vou editar
+                  objetoParaEnvio['id'] = this.editedUnidade.id
+                  try {
+                    this.$http.put('unidades/' + this.editedUnidade.id, objetoParaEnvio)
+                      .then(response => {
+                        this.getUnidades()
+                        this.$toastr.s(
+                          'Unidade alterada com sucesso', 'Sucesso!'
+                        )
+                        this.dialogAddEditUnidade = false
+                      })
+                      .catch(erro => console.log(erro))
+                  } catch (e) {
+                    this.$toastr.e(
+                      'Houve um erro na tentativa de execução: <br>' + e, 'Erro!'
+                    )
+                  }
+                }
+              }
+            })
+            .catch(erro => console.log(erro))
+        } catch (e) {
+          this.$toastr.e(
+            'Houve um erro na tentativa de execução: <br>' + e, 'Erro!'
+          )
         }
       }
     },
@@ -771,8 +816,10 @@ export default {
           }
         }
       }
+
       this.$nextTick(() => {
         this.editedUnidade = Object.assign({}, this.defaultUnidade)
+        this.editedUnidade.cursos = [] // Explicitly clear the cursos array
         this.editedIndex = -1
       })
     },

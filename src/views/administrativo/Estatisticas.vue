@@ -216,7 +216,7 @@
           :key="unidade.id"
           :color="ajustaCorBtnSelecao(unidade.id)"
           rounded
-          class="white--text mr-4"
+          class="white--text mr-4 mb-3"
           @click="openUnidade(unidade)">
           {{ unidade.nome }}
         </v-btn>
@@ -235,7 +235,7 @@
           :key="curso.id"
           :color="ajustaCorBtnSelecao(curso.id)"
           rounded
-          class="white--text mr-4"
+          class="white--text mr-4 mb-3"
           @click="openCurso(curso)">
           {{ curso.nome }} ( {{ curso.unidade.nome }} )
         </v-btn>
@@ -254,7 +254,7 @@
           :key="coordenador.id"
           :color="ajustaCorBtnSelecao(coordenador.id)"
           rounded
-          class="white--text mr-4"
+          class="white--text mr-4 mb-3"
           @click="openCoordenador(coordenador)">
           {{ coordenador.nome }}
         </v-btn>

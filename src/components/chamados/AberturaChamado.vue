@@ -8,13 +8,13 @@
       <v-col cols="11">
         <span class="pl-3">Digite sua Matricula</span>
         <v-text-field
-          v-mask="'#########'"
+          v-mask="'########'"
           ref="matriculaField"
           v-model="matricula"
-          :rules="[v => /^\d{9}$/.test(v) || 'A matrícula deve conter exatamente 9 dígitos']"
+          :rules="[v => /^\d{8}$/.test(v) || 'A matrícula deve conter exatamente 8 dígitos']"
           dense
           label="Matricula"
-          maxlength="9"
+          maxlength="8"
           rounded
           solo
           @keydown.enter="pesquisaMatricula"
@@ -213,8 +213,8 @@ export default {
       if (matricula === '') {
         this.msgErroMatricula.push('<li>O campo matricula não pode ser vazio.</li>')
       }
-      if (matricula.length !== 9) {
-        this.msgErroMatricula.push('<li>O campo matricula deve possuir 9 digitos. </li>')
+      if (matricula.length !== 8) {
+        this.msgErroMatricula.push('<li>O campo matricula deve possuir 8 digitos. </li>')
       }
       // Verifica se contém apenas dígitos de 0 a 9
       if (!/^\d+$/.test(matricula)) {

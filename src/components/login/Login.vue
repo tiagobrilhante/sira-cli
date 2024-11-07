@@ -28,12 +28,12 @@
                 <v-row no-gutters>
                   <v-col>
                     <v-text-field
-                      v-mask="'#########'"
+                      v-mask="'########'"
                       v-model="usuario.matricula"
-                      :rules="[v => /^\d{9}$/.test(v) || 'A matrícula deve conter exatamente 9 dígitos']"
+                      :rules="[v => /^\d{8}$/.test(v) || 'A matrícula deve conter exatamente 8 dígitos']"
                       clearable
                       dense
-                      maxlength="9"
+                      maxlength="8"
                       label="Matricula"
                       name="matricula"
                       outlined
@@ -217,15 +217,25 @@
               <v-tooltip
                 top>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon
+                  <v-btn
                     v-bind="attrs"
-                    class="mr-2"
-                    small
+                    class="white--text"
+                    color="rgb(250, 115, 59)"
+                    rounded
+                    x-small
                     @click="openDialogVerDetalhes(item)"
                     v-on="on"
                   >
-                    mdi-magnify
-                  </v-icon>
+                    <v-icon
+
+                      class="mr-2"
+                      x-small
+
+                    >
+                      mdi-magnify
+                    </v-icon>
+                    Ver detalhes
+                  </v-btn>
                 </template>
                 <span>Detalhes da solicitação</span>
               </v-tooltip>
@@ -300,12 +310,12 @@
               <span class="pl-3">Matricula</span>
 
               <v-text-field
-                v-mask="'#########'"
+                v-mask="'########'"
                 v-model="editedUser.matricula"
-                :rules="[v => /^\d{9}$/.test(v) || 'A matrícula deve conter exatamente 9 dígitos']"
+                :rules="[v => /^\d{8}$/.test(v) || 'A matrícula deve conter exatamente 8 dígitos']"
                 dense
                 label="Matricula"
-                maxlength="9"
+                maxlength="8"
                 rounded
                 solo
               />

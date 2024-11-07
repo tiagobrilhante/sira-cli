@@ -3,6 +3,7 @@
   <v-row dense>
     <v-col>
 
+      <!-- cabecalho e btn ajuste de dsados-->
       <v-row class="pb-3">
         <v-col><h3 class="pt-1">Dados do Aluno</h3></v-col>
         <v-col class="text-right"><v-btn
@@ -398,12 +399,12 @@
                 <span class="pl-3">Matricula</span>
 
                 <v-text-field
-                  v-mask="'#########'"
+                  v-mask="'########'"
                   v-model="editedUser.matricula"
-                  :rules="[v => /^\d{9}$/.test(v) || 'A matrícula deve conter exatamente 9 dígitos']"
+                  :rules="[v => /^\d{8}$/.test(v) || 'A matrícula deve conter exatamente 8 dígitos']"
                   dense
                   label="Matricula"
-                  maxlength="9"
+                  maxlength="8"
                   rounded
                   solo
                 />

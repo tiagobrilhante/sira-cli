@@ -2,6 +2,8 @@
   <v-row no-gutters>
     <v-col>
       <!-- seletor de cursos-->
+
+      {{ usuarioLogado }}
       <v-alert
         elevation="5"
         rounded="xxl">
@@ -362,8 +364,12 @@ export default {
         this.editedUser.matricula = this.usuarioLogado.matricula
         this.$http.post('users/updatecursousuario', this.editedUser)
           .then(response => {
-            this.$store.dispatch('atualizarUsuarioLogado', response.data)
-            this.$emit('atualiza-vinculo')
+            if (response.data === 'duplicado') {
+              this.mostrarToastrPersonalizado('Você já está vinculado a este curso.')
+            } else {
+              this.$store.dispatch('atualizarUsuarioLogado', response.data)
+              this.$emit('atualiza-vinculo')
+            }
           })
           .catch(erro => {
             this.mostrarToastrPersonalizado(erro.response.data.message)

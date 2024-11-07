@@ -519,6 +519,7 @@ export default {
       if (this.validaDadosParaEnvio()) {
         this.$http.post('autocadastro', this.editedUser)
           .then(response => {
+            console.log(response.data)
             this.$store.dispatch('efetuarLogin', {
               matricula: this.editedUser.matricula,
               password: this.editedUser.password

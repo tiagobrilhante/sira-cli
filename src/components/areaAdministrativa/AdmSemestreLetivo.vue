@@ -160,7 +160,9 @@
               <ul
                 v-for="pt in turno.periodo_turma"
                 :key="pt.id">
-                <li>{{ pt.periodo }}º Período - ( {{ pt.qtd_turmas_por_periodo }} turma<span v-if="pt.qtd_turmas_por_periodo > 1">s</span> )</li>
+                <li>{{ pt.periodo }}º Período - ( {{ pt.qtd_turmas_por_periodo }} turma<span
+                  v-if="pt.qtd_turmas_por_periodo > 1">s</span> )
+                </li>
               </ul>
             </li>
           </ul>
@@ -174,73 +176,78 @@
 
       </v-data-table>
 
-      <!--Dialog para Configurar Semestre Letivo-->
+      <!-- Dialog para Configurar Semestre Letivo -->
       <v-dialog
         v-if="dialogConfigSemestreLetivo"
         v-model="dialogConfigSemestreLetivo"
         max-width="70%">
         <v-card>
-          <v-form @submit.prevent="efetuarAjusteSemestreLetivo">
-            <v-card-title
-              class="justify-center"
-              primary-title>
-              Configuração de Semestre Letivo - {{ emVigencia() }}
-            </v-card-title>
-            <v-card-text>
-              <h2>Unidade: {{ selectedUnidade.nome }}</h2>
-              <br>
-              <v-alert
-                v-for="curso in retornoCursosExistentes"
-                :key="curso.id"
-                class="white--text"
-                color="#015088"
-                elevation="5">
-                <h3>{{ curso.nome }}</h3>
-                <br>
-                <hr>
-                <br>
-                <AsyncSituacaoCursos
-                  :key="asyncComponentKey"
-                  :curso="curso"
-                  :em-vigencia="emVigencia"
-                  :retorna-situacao-cursos="retornaSituacaoCursos"
-                  :semestres-letivos="curso.semestres_letivos"
-                  :turno-parametro="turnoParametro"
-                  :unidade="selectedUnidade"
-                  @turmaHabilitada="handleTurmaHabilitada"
-                />
-              </v-alert>
-
-              <v-alert
-                v-if="retornoCursosExistentes.length === 0"
-                color="#015088"
-                elevation="5"
-                class="white--text">
-                Não existem cursos cadastrados nessa unidade.
-              </v-alert>
-            </v-card-text>
-            <v-card-actions class="pb-5">
-              <v-row>
-                <v-col class="text-right mr-4">
-                  <!--cancelar-->
+          <v-card-title
+            class="justify-center"
+            primary-title>
+            Configuração de Semestre Letivo - {{ emVigencia() }}
+          </v-card-title>
+          <v-card-text>
+            <h2>Unidade: {{ selectedUnidade.nome }}</h2>
+            <br>
+            <v-alert
+              v-for="curso in retornoCursosExistentes"
+              :key="curso.id"
+              class="white--text"
+              color="#015088"
+              elevation="5"
+            >
+              <v-row align="center">
+                <v-col>
+                  <h3>{{ curso.nome }}</h3>
+                </v-col>
+                <v-col class="text-right">
                   <v-btn
-                    class="white--text"
-                    color="rgb(250, 115, 59)"
-                    @click="dialogConfigSemestreLetivo = false">
-                    Fechar
-                  </v-btn>
-                  <span class="pl-5 pr-5"/>
-                  <!-- persistir-->
-                  <v-btn
-                    class="white--text"
-                    color="#015088"
-                    type="submit">
-                    Configurar
+                    :color="expandedCursoId === curso.id ? 'primary' : 'grey'"
+                    icon
+                    @click="toggleCurso(curso.id)"
+                  >
+                    <v-icon>{{ expandedCursoId === curso.id ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                   </v-btn>
                 </v-col>
               </v-row>
-            </v-card-actions>
-          </v-form>
+              <v-expand-transition>
+                <div v-show="expandedCursoId === curso.id">
+                  <hr>
+                  <AsyncSituacaoCursos
+                    :key="asyncComponentKey"
+                    :curso="curso"
+                    :em-vigencia="emVigencia"
+                    :retorna-situacao-cursos="retornaSituacaoCursos"
+                    :semestres-letivos="curso.semestres_letivos"
+                    :turno-parametro="turnoParametro"
+                    :unidade="selectedUnidade"
+                    @turmaHabilitada="handleTurmaHabilitada"
+                  />
+                </div>
+              </v-expand-transition>
+            </v-alert>
+
+            <v-alert
+              v-if="retornoCursosExistentes.length === 0"
+              class="white--text"
+              color="#015088"
+              elevation="5">
+              Não existem cursos cadastrados nessa unidade.
+            </v-alert>
+          </v-card-text>
+          <v-card-actions class="pb-5">
+            <v-row>
+              <v-col class="text-right mr-4">
+                <v-btn
+                  class="white--text"
+                  color="rgb(250, 115, 59)"
+                  @click="dialogConfigSemestreLetivo = false">
+                  Fechar
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
         </v-card>
       </v-dialog>
 
@@ -308,7 +315,8 @@ export default {
     unidadesSimples: [],
     retornoCursosExistentes: [],
     turnoParametro: [],
-    asyncComponentKey: 0
+    asyncComponentKey: 0,
+    expandedCursoId: null // ID do curso expandido
   }),
   computed: {
     ...mapGetters(['usuarioLogado', 'usuarioEstaLogado']),
@@ -451,9 +459,6 @@ export default {
         .catch(erro => console.log(erro))
     },
 
-    efetuarAjusteSemestreLetivo () {
-    },
-
     async retornaSituacaoCursos (semestreLetivo) {
       if (semestreLetivo.length === 0) {
         return 'Sem cursos vigentes'
@@ -514,6 +519,10 @@ export default {
       } catch (erro) {
         console.error('Erro ao atualizar cursos existentes:', erro)
       }
+    },
+
+    toggleCurso (cursoId) {
+      this.expandedCursoId = this.expandedCursoId === cursoId ? null : cursoId
     }
 
   }
